@@ -13,6 +13,8 @@ class ImagesListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
 
     private let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
+    private let mockImageDate = Date()
+
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -37,7 +39,7 @@ extension ImagesListViewController {
         }
         cell.cellImage.image = image
 
-        let imageDate = dateFormatter.string(from: Date())
+        let imageDate = dateFormatter.string(from: mockImageDate)
         cell.imageDateLabel.text = imageDate
 
         let likeButtonImage = (indexPath.row % 2 == 0 ? UIImage(named: "Active.png") : UIImage(named: "No Active.png")) ?? UIImage()
@@ -77,9 +79,7 @@ extension ImagesListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
-
-        guard let imageListCell = cell as? ImagesListCell else {
+        guard let imageListCell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as? ImagesListCell else {
             return UITableViewCell()
         }
 
