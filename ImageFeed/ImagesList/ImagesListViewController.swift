@@ -10,7 +10,7 @@ import UIKit
 class ImagesListViewController: UIViewController {
 
 
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
     private let mockImageDate = Date()
