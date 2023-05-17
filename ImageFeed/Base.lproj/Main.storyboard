@@ -24,7 +24,7 @@
                         </tabBarAppearance>
                     </tabBar>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="aMR-sW-boh"/>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="Uya-Xa-yzI"/>
                         <segue destination="MnE-W2-Cyf" kind="relationship" relationship="viewControllers" id="4fW-7N-ZJi"/>
                     </connections>
                 </tabBarController>
@@ -109,14 +109,76 @@
                             <constraint firstAttribute="trailing" secondItem="luG-u4-mky" secondAttribute="trailing" id="adu-1K-MG4"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" image="rectangle.stack.fill" catalog="system" id="lbe-f6-0eo"/>
+                    <tabBarItem key="tabBarItem" title="" image="rectangle.stack.fill" catalog="system" id="0W6-4F-7S4"/>
+                    <navigationItem key="navigationItem" id="hbQ-MH-8vS"/>
                     <connections>
                         <outlet property="tableView" destination="luG-u4-mky" id="ZbS-aJ-kYt"/>
+                        <segue destination="JTi-ni-6NI" kind="presentation" identifier="ShowSingleImage" id="aRB-rB-jOx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="46.564885496183201" y="-2.1126760563380285"/>
+            <point key="canvasLocation" x="47" y="26"/>
+        </scene>
+        <!--Single Image View Controller-->
+        <scene sceneID="4oI-H9-atI">
+            <objects>
+                <viewController modalPresentationStyle="fullScreen" id="JTi-ni-6NI" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZDL-8Y-tis">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DLB-mj-NYI">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="Oow-Mb-DW5">
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="132"/>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="Oow-Mb-DW5" firstAttribute="top" secondItem="mts-iT-VeY" secondAttribute="top" id="OJ9-iK-Pvf"/>
+                                    <constraint firstItem="Oow-Mb-DW5" firstAttribute="trailing" secondItem="mts-iT-VeY" secondAttribute="trailing" id="Si7-T2-5IX"/>
+                                    <constraint firstItem="Oow-Mb-DW5" firstAttribute="bottom" secondItem="mts-iT-VeY" secondAttribute="bottom" id="cHl-Aw-W6h"/>
+                                    <constraint firstItem="Oow-Mb-DW5" firstAttribute="leading" secondItem="mts-iT-VeY" secondAttribute="leading" id="n2O-1B-Vef"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="mts-iT-VeY"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="3SR-mZ-eIK"/>
+                            </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OQ1-qr-12X" userLabel="Backward button">
+                                <rect key="frame" x="16" y="60" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="Q8Y-zM-LyQ"/>
+                                    <constraint firstAttribute="height" constant="44" id="yoK-kd-L4X"/>
+                                </constraints>
+                                <color key="tintColor" name="ypWhie"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="chevron.backward" catalog="system"/>
+                                <connections>
+                                    <action selector="didTapBackButton:" destination="JTi-ni-6NI" eventType="touchUpInside" id="4Ga-I9-Jaj"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Pwn-pk-mmf"/>
+                        <color key="backgroundColor" name="ypBlack"/>
+                        <constraints>
+                            <constraint firstItem="OQ1-qr-12X" firstAttribute="top" secondItem="ZDL-8Y-tis" secondAttribute="top" constant="60" id="Eeo-ao-9L4"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="OQ1-qr-12X" secondAttribute="trailing" constant="16" id="FbQ-23-HWA"/>
+                            <constraint firstItem="OQ1-qr-12X" firstAttribute="leading" secondItem="ZDL-8Y-tis" secondAttribute="leading" constant="16" id="IT3-TI-L8M"/>
+                            <constraint firstAttribute="top" secondItem="DLB-mj-NYI" secondAttribute="top" id="SMB-jk-4cG"/>
+                            <constraint firstItem="DLB-mj-NYI" firstAttribute="trailing" secondItem="ZDL-8Y-tis" secondAttribute="trailing" id="Uhd-6f-zk7"/>
+                            <constraint firstItem="DLB-mj-NYI" firstAttribute="bottom" secondItem="ZDL-8Y-tis" secondAttribute="bottom" id="jX4-km-bir"/>
+                            <constraint firstAttribute="leading" secondItem="DLB-mj-NYI" secondAttribute="leading" id="qSj-Kp-tJa"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="yZh-t4-ZL6"/>
+                    <connections>
+                        <outlet property="imageView" destination="Oow-Mb-DW5" id="use-ne-lCm"/>
+                        <outlet property="scrollView" destination="DLB-mj-NYI" id="UnW-cZ-z0W"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wAG-oC-lI5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="918" y="26"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="clD-GO-5lj">
@@ -203,6 +265,7 @@
     <resources>
         <image name="0" width="200" height="132"/>
         <image name="Active" width="44" height="44"/>
+        <image name="chevron.backward" catalog="system" width="97" height="128"/>
         <image name="ipad.and.arrow.forward" catalog="system" width="113" height="128"/>
         <image name="ipad.and.arrow.forward" width="44" height="44"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
