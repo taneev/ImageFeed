@@ -143,6 +143,9 @@
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="mts-iT-VeY"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="3SR-mZ-eIK"/>
+                                <connections>
+                                    <outlet property="delegate" destination="JTi-ni-6NI" id="8Ki-AX-GmV"/>
+                                </connections>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OQ1-qr-12X" userLabel="Backward button">
                                 <rect key="frame" x="16" y="60" width="44" height="44"/>
@@ -266,8 +269,8 @@
         <image name="0" width="200" height="132"/>
         <image name="Active" width="44" height="44"/>
         <image name="chevron.backward" catalog="system" width="97" height="128"/>
-        <image name="ipad.and.arrow.forward" catalog="system" width="113" height="128"/>
         <image name="ipad.and.arrow.forward" width="44" height="44"/>
+        <image name="ipad.and.arrow.forward" catalog="system" width="113" height="128"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
         <image name="rectangle.stack.fill" catalog="system" width="128" height="122"/>
         <image name="userpick" width="70" height="70"/>
