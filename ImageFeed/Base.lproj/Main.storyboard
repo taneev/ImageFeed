@@ -130,7 +130,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DLB-mj-NYI">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="Oow-Mb-DW5">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="Oow-Mb-DW5" userLabel="Image">
                                         <rect key="frame" x="0.0" y="0.0" width="200" height="132"/>
                                     </imageView>
                                 </subviews>
@@ -146,6 +146,18 @@
                                     <outlet property="delegate" destination="JTi-ni-6NI" id="8Ki-AX-GmV"/>
                                 </connections>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ciD-zL-fzh" userLabel="Sharing Button">
+                                <rect key="frame" x="171.66666666666666" y="764" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="dpV-j7-1Dm"/>
+                                    <constraint firstAttribute="height" constant="50" id="mVE-bC-F0V"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="sharing_button"/>
+                                <connections>
+                                    <action selector="didTapShareButton:" destination="JTi-ni-6NI" eventType="touchUpInside" id="y8J-4p-MD7"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OQ1-qr-12X" userLabel="Backward button">
                                 <rect key="frame" x="16" y="60" width="44" height="44"/>
                                 <constraints>
@@ -168,8 +180,10 @@
                             <constraint firstItem="OQ1-qr-12X" firstAttribute="leading" secondItem="ZDL-8Y-tis" secondAttribute="leading" constant="16" id="IT3-TI-L8M"/>
                             <constraint firstAttribute="top" secondItem="DLB-mj-NYI" secondAttribute="top" id="SMB-jk-4cG"/>
                             <constraint firstItem="DLB-mj-NYI" firstAttribute="trailing" secondItem="ZDL-8Y-tis" secondAttribute="trailing" id="Uhd-6f-zk7"/>
+                            <constraint firstItem="Pwn-pk-mmf" firstAttribute="bottom" secondItem="ciD-zL-fzh" secondAttribute="bottom" constant="38" id="Xf8-5Y-E7v"/>
                             <constraint firstItem="DLB-mj-NYI" firstAttribute="bottom" secondItem="ZDL-8Y-tis" secondAttribute="bottom" id="jX4-km-bir"/>
                             <constraint firstAttribute="leading" secondItem="DLB-mj-NYI" secondAttribute="leading" id="qSj-Kp-tJa"/>
+                            <constraint firstItem="ciD-zL-fzh" firstAttribute="centerX" secondItem="Pwn-pk-mmf" secondAttribute="centerX" id="sQZ-VX-soB"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="yZh-t4-ZL6"/>
@@ -205,6 +219,7 @@
         <image name="chevron.backward" catalog="system" width="97" height="128"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
         <image name="rectangle.stack.fill" catalog="system" width="128" height="122"/>
+        <image name="sharing_button" width="50" height="50"/>
         <namedColor name="ypBlack">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
