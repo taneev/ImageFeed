@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		22092AD52A12E00D002D70A4 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22092AD42A12E00D002D70A4 /* SingleImageViewController.swift */; };
+		22092AEE2A1946D7002D70A4 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22092AED2A1946D7002D70A4 /* UIColor+Extensions.swift */; };
 		227E4E542A0D89FD00AFF8FA /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227E4E532A0D89FD00AFF8FA /* ProfileViewController.swift */; };
 		22FDE71E29FEB6B00089302F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FDE71D29FEB6B00089302F /* AppDelegate.swift */; };
 		22FDE72029FEB6B00089302F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FDE71F29FEB6B00089302F /* SceneDelegate.swift */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		22092AD42A12E00D002D70A4 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
+		22092AED2A1946D7002D70A4 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		227E4E532A0D89FD00AFF8FA /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		22FDE71A29FEB6B00089302F /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22FDE71D29FEB6B00089302F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				22FDE72629FEB6B20089302F /* Assets.xcassets */,
 				22FDE72829FEB6B20089302F /* LaunchScreen.storyboard */,
 				22FDE72B29FEB6B20089302F /* Info.plist */,
+				22092AED2A1946D7002D70A4 /* UIColor+Extensions.swift */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -175,6 +178,7 @@
 				22FDE7322A0023200089302F /* ImagesListCell.swift in Sources */,
 				227E4E542A0D89FD00AFF8FA /* ProfileViewController.swift in Sources */,
 				22FDE71E29FEB6B00089302F /* AppDelegate.swift in Sources */,
+				22092AEE2A1946D7002D70A4 /* UIColor+Extensions.swift in Sources */,
 				22092AD52A12E00D002D70A4 /* SingleImageViewController.swift in Sources */,
 				22FDE72029FEB6B00089302F /* SceneDelegate.swift in Sources */,
 			);

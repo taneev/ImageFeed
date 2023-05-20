@@ -4,7 +4,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
-        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -190,75 +189,10 @@
                     <view key="view" contentMode="scaleToFill" id="q78-F0-zJT">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uiu-r1-Mbh" userLabel="Exit Button">
-                                <rect key="frame" x="333" y="104" width="44" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="Eu8-N1-g1x"/>
-                                    <constraint firstAttribute="width" secondItem="uiu-r1-Mbh" secondAttribute="height" multiplier="1:1" id="y7K-qi-7Tm"/>
-                                </constraints>
-                                <color key="tintColor" name="ypRed"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal">
-                                    <imageReference key="image" image="ipad.and.arrow.forward" catalog="system" symbolScale="default"/>
-                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration"/>
-                                </state>
-                                <buttonConfiguration key="configuration" style="plain">
-                                    <imageReference key="image" image="ipad.and.arrow.forward" symbolScale="default"/>
-                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <action selector="logoutButtonTapped:" destination="MnE-W2-Cyf" eventType="touchUpInside" id="FcX-Wt-cCH"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Екатерина Новикова" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bqt-ps-DWt" userLabel="Name">
-                                <rect key="frame" x="15.999999999999986" y="169" width="233.66666666666663" height="28"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
-                                <color key="textColor" name="ypWhie"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@ekaterina_nov" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fpm-9p-kAD" userLabel="Email">
-                                <rect key="frame" x="16" y="205" width="97" height="16"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" name="ypGray"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello, world!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2S4-r5-O9m" userLabel="Bio">
-                                <rect key="frame" x="16" y="229" width="94.666666666666671" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" name="ypWhie"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="userpick" translatesAutoresizingMaskIntoConstraints="NO" id="QSJ-RB-6mr">
-                                <rect key="frame" x="16" y="91" width="70" height="70"/>
-                            </imageView>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="Idy-FK-WUP"/>
                         <color key="backgroundColor" name="ypBlack"/>
-                        <constraints>
-                            <constraint firstItem="QSJ-RB-6mr" firstAttribute="top" secondItem="Idy-FK-WUP" secondAttribute="top" constant="32" id="39c-Mc-kHz"/>
-                            <constraint firstItem="2S4-r5-O9m" firstAttribute="leading" secondItem="QSJ-RB-6mr" secondAttribute="leading" id="3KO-zp-nqn"/>
-                            <constraint firstItem="Idy-FK-WUP" firstAttribute="trailing" secondItem="uiu-r1-Mbh" secondAttribute="trailing" constant="16" id="7AL-sz-wO3"/>
-                            <constraint firstItem="Idy-FK-WUP" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="bqt-ps-DWt" secondAttribute="trailing" constant="16" id="A6y-vm-tjR"/>
-                            <constraint firstItem="uiu-r1-Mbh" firstAttribute="centerY" secondItem="QSJ-RB-6mr" secondAttribute="centerY" id="CPQ-RP-YGR"/>
-                            <constraint firstItem="bqt-ps-DWt" firstAttribute="leading" secondItem="QSJ-RB-6mr" secondAttribute="leading" id="D2s-vv-cI2"/>
-                            <constraint firstItem="bqt-ps-DWt" firstAttribute="top" secondItem="QSJ-RB-6mr" secondAttribute="bottom" constant="8" id="E2u-DX-0lZ"/>
-                            <constraint firstItem="fpm-9p-kAD" firstAttribute="top" secondItem="bqt-ps-DWt" secondAttribute="bottom" constant="8" id="P61-nO-69r"/>
-                            <constraint firstItem="Idy-FK-WUP" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="fpm-9p-kAD" secondAttribute="trailing" constant="16" id="Rfl-9U-XNC"/>
-                            <constraint firstItem="uiu-r1-Mbh" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="QSJ-RB-6mr" secondAttribute="trailing" constant="16" id="bLN-b6-FVG"/>
-                            <constraint firstItem="QSJ-RB-6mr" firstAttribute="leading" secondItem="q78-F0-zJT" secondAttribute="leading" constant="16" id="c2M-Kp-8fW"/>
-                            <constraint firstItem="2S4-r5-O9m" firstAttribute="top" secondItem="fpm-9p-kAD" secondAttribute="bottom" constant="8" id="phd-GE-QgR"/>
-                            <constraint firstItem="Idy-FK-WUP" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2S4-r5-O9m" secondAttribute="trailing" constant="16" id="uoP-T9-ndz"/>
-                            <constraint firstItem="fpm-9p-kAD" firstAttribute="leading" secondItem="QSJ-RB-6mr" secondAttribute="leading" id="vYg-Hp-iNf"/>
-                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="person.crop.circle.fill" catalog="system" id="plq-c1-gIX"/>
-                    <connections>
-                        <outlet property="userBioLabel" destination="2S4-r5-O9m" id="x7o-Af-Uzn"/>
-                        <outlet property="useremailLabel" destination="fpm-9p-kAD" id="7VI-Zi-F71"/>
-                        <outlet property="usernameLabel" destination="bqt-ps-DWt" id="mOR-Cw-hdS"/>
-                        <outlet property="userpickImageView" destination="QSJ-RB-6mr" id="jP8-7b-geV"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tGc-Ia-uRY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -269,19 +203,10 @@
         <image name="0" width="200" height="132"/>
         <image name="Active" width="44" height="44"/>
         <image name="chevron.backward" catalog="system" width="97" height="128"/>
-        <image name="ipad.and.arrow.forward" width="44" height="44"/>
-        <image name="ipad.and.arrow.forward" catalog="system" width="113" height="128"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
         <image name="rectangle.stack.fill" catalog="system" width="128" height="122"/>
-        <image name="userpick" width="70" height="70"/>
         <namedColor name="ypBlack">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="ypGray">
-            <color red="0.68235294117647061" green="0.68627450980392157" blue="0.70588235294117652" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="ypRed">
-            <color red="0.96078431372549022" green="0.41960784313725491" blue="0.42352941176470588" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="ypWhie">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
