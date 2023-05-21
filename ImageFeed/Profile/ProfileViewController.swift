@@ -12,12 +12,12 @@ final class ProfileViewController: UIViewController {
     private let leftMargin: CGFloat = 16
     private let rightMargin: CGFloat = 16
 
-    private var profileImageView: UIImageView!
-    private var logoutButton: UIButton!
+    private lazy var profileImageView: UIImageView = { createProfileImageView() }()
+    private lazy var logoutButton: UIButton = { createLogoutButton() }()
 
-    private var usernameLabel: UILabel?
-    private var emailLabel: UILabel?
-    private var bioLabel: UILabel?
+    private lazy var usernameLabel: UILabel = { createUserNameLabel() }()
+    private lazy var emailLabel: UILabel = { createEmailLabel() }()
+    private lazy var bioLabel: UILabel = { createBioLabel() }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,26 +26,17 @@ final class ProfileViewController: UIViewController {
         addSubviewsAndConstraints()
 
         // проверка верстки
-        usernameLabel?.text = "Екатерина Новикова"
-        emailLabel?.text = "@ekaterina_nov"
-        bioLabel?.text = "Hello, world!"
+        usernameLabel.text = "Екатерина Новикова"
+        emailLabel.text = "@ekaterina_nov"
+        bioLabel.text = "Hello, world!"
     }
 
     private func addSubviewsAndConstraints() {
-        profileImageView = createProfileImageView()
         view.addSubview(profileImageView)
-
-        logoutButton = createLogoutButton()
         view.addSubview(logoutButton)
-
-        usernameLabel = createUserNameLabel()
-        view.addSubview(usernameLabel!)
-
-        emailLabel = createEmailLabel()
-        view.addSubview(emailLabel!)
-
-        bioLabel = createBioLabel()
-        view.addSubview(bioLabel!)
+        view.addSubview(usernameLabel)
+        view.addSubview(emailLabel)
+        view.addSubview(bioLabel)
 
         addConstraints()
     }
@@ -107,36 +98,20 @@ final class ProfileViewController: UIViewController {
             profileImageView.topAnchor.constraint(equalTo:  view.safeAreaLayoutGuide.topAnchor, constant: 40),
 
             logoutButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            logoutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -rightMargin)
+            logoutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -rightMargin),
+
+            usernameLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
+            usernameLabel.topAnchor.constraint(equalTo:  profileImageView.bottomAnchor, constant: 8),
+            usernameLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -rightMargin),
+
+            emailLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
+            emailLabel.topAnchor.constraint(equalTo:  usernameLabel.bottomAnchor, constant: 8),
+            emailLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -rightMargin),
+
+            bioLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
+            bioLabel.topAnchor.constraint(equalTo:  emailLabel.bottomAnchor, constant: 8),
+            bioLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -rightMargin)
         ])
-
-        if let usernameLabel {
-            NSLayoutConstraint.activate([
-                usernameLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-                usernameLabel.topAnchor.constraint(equalTo:  profileImageView.bottomAnchor, constant: 8),
-                usernameLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -rightMargin)
-            ])
-        }
-
-        if  let emailLabel,
-            let usernameLabel
-        {
-            NSLayoutConstraint.activate([
-                emailLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-                emailLabel.topAnchor.constraint(equalTo:  usernameLabel.bottomAnchor, constant: 8),
-                emailLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -rightMargin)
-            ])
-        }
-
-        if  let bioLabel,
-            let emailLabel
-        {
-            NSLayoutConstraint.activate([
-                bioLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-                bioLabel.topAnchor.constraint(equalTo:  emailLabel.bottomAnchor, constant: 8),
-                bioLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -rightMargin)
-            ])
-        }
     }
 
     @objc private func logoutButtonTapped() {
