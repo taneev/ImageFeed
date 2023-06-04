@@ -59,5 +59,6 @@ final class OAuth2Service {
                 mainQueueCompletion(.failure(NetworkError.sessionError))
             }
         }
+        task.resume()
     }
 }
