@@ -19,11 +19,23 @@ final class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if let token = authStorage.token {
+        if let _ = authStorage.token {
             switchToTabBarController()
         }
         else {
             performSegue(withIdentifier: authViewControllerSegueID, sender: self)
+        }
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == authViewControllerSegueID {
+            guard let navigationController = segue.destination as? UINavigationController,
+                  let authViewController = navigationController.viewControllers[0] as? AuthViewController
+            else { fatalError("Segue \(authViewControllerSegueID) prepare error") }
+            authViewController.delegate = self
+        }
+        else {
+            super.prepare(for: segue, sender: sender)
         }
     }
 
@@ -34,4 +46,26 @@ final class SplashViewController: UIViewController {
         window.rootViewController = tabBarViewController
     }
 
+}
+
+extension SplashViewController: AuthViewControllerDelegate {
+    func authViewControllerDelegate(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        dismiss(animated: true) {[weak self] in
+            self?.fetchOAuthToken(authCode: code)
+        }
+    }
+
+    private func fetchOAuthToken(authCode code: String) {
+        OAuth2Service().fetchAuthToken(code: code) {[weak self] result in
+            guard let self else {return}
+            switch result {
+            case .success(let authCode):
+                self.authStorage.token = authCode // сохраняем полученный токен
+                self.switchToTabBarController() // переключаемся на TabBarController
+            case .failure(let error):
+                // TODO: написать обработку неуспешной авторизации
+                print("Authorization failed: \(error.localizedDescription)")
+            }
+        }
+    }
 }

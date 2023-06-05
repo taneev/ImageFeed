@@ -7,9 +7,14 @@
 
 import UIKit
 
+protocol AuthViewControllerDelegate: AnyObject {
+    func authViewControllerDelegate(_ vc: AuthViewController, didAuthenticateWithCode code: String)
+}
+
 final class AuthViewController: UIViewController {
 
     private let webViewControllerSegueID = "ShowWebView"
+    weak var delegate: AuthViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,14 +35,7 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        OAuth2Service().fetchAuthToken(code: code) { result in
-            switch result {
-            case .success(let authCode):
-                OAuth2TokenStorage().token = authCode
-            case .failure(let error):
-                fatalError("Authorization failed: \(error.localizedDescription)")
-            }
-        }
+        delegate?.authViewControllerDelegate(self, didAuthenticateWithCode: code)
     }
 
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
