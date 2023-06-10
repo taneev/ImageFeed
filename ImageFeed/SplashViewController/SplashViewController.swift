@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ProgressHUD
 
 final class SplashViewController: UIViewController {
 
@@ -50,6 +51,7 @@ final class SplashViewController: UIViewController {
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewControllerDelegate(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        ProgressHUD.show()
         dismiss(animated: true) {[weak self] in
             self?.fetchOAuthToken(authCode: code)
         }
@@ -62,7 +64,9 @@ extension SplashViewController: AuthViewControllerDelegate {
             case .success(let authCode):
                 self.authStorage.token = authCode // сохраняем полученный токен
                 self.switchToTabBarController() // переключаемся на TabBarController
+                ProgressHUD.dismiss()
             case .failure(let error):
+                ProgressHUD.dismiss()
                 // TODO: написать обработку неуспешной авторизации
                 print("Authorization failed: \(error.localizedDescription)")
             }
