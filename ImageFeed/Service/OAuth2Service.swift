@@ -15,15 +15,13 @@ enum NetworkError: Error {
 }
 
 final class OAuth2Service {
-    func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
 
-        let mainQueueCompletion: ((Result<String, Error>) -> Void) = {result in
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
+    private let tokenRequestURLString = "https://unsplash.com/oauth/token"
+    private var task: URLSessionTask?
+    private var lastCode: String?
 
-        var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token")!
+    private func makeAuthRequest(code: String) -> URLRequest {
+        var urlComponents = URLComponents(string: tokenRequestURLString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: AccessKey),
             URLQueryItem(name: "client_secret", value: SecretKey),
@@ -35,30 +33,46 @@ final class OAuth2Service {
         var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = "POST"
 
+        return request
+    }
+
+    func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+
+        assert(Thread.isMainThread)
+        if lastCode == code { return }
+        task?.cancel()
+        lastCode = code
+
+        let request = makeAuthRequest(code: code)
         let task = URLSession.shared.dataTask(with: request) {data, response, error in
-            if let error {
-                completion(.failure(NetworkError.transportError(error)))
-            }
-            else if let data,
-                    let httpResponse = response as? HTTPURLResponse {
-                if 200..<300 ~= httpResponse.statusCode {
-                    let decoder = JSONDecoder()
-                    do {
-                        let responseObject = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                        mainQueueCompletion(.success(responseObject.accessToken))
+            DispatchQueue.main.async {
+                if let error {
+                    completion(.failure(NetworkError.transportError(error)))
+                    self.lastCode = nil
+                }
+                else if let data,
+                        let httpResponse = response as? HTTPURLResponse {
+                    if 200..<300 ~= httpResponse.statusCode {
+                        let decoder = JSONDecoder()
+                        do {
+                            let responseObject = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+                            completion(.success(responseObject.accessToken))
+                        }
+                        catch {
+                            completion(.failure(NetworkError.decodeError(error)))
+                        }
                     }
-                    catch {
-                        mainQueueCompletion(.failure(NetworkError.decodeError(error)))
+                    else {
+                        completion(.failure(NetworkError.serverError(httpResponse.statusCode)))
                     }
                 }
                 else {
-                    mainQueueCompletion(.failure(NetworkError.serverError(httpResponse.statusCode)))
+                    completion(.failure(NetworkError.sessionError))
                 }
-            }
-            else {
-                mainQueueCompletion(.failure(NetworkError.sessionError))
+                self.task = nil
             }
         }
+        self.task = task
         task.resume()
     }
 }

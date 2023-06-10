@@ -12,6 +12,7 @@ final class SplashViewController: UIViewController {
 
     private let authViewControllerSegueID = "AuthViewControllerSegue"
     private let authStorage = OAuth2TokenStorage()
+    private let authService = OAuth2Service()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +59,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
 
     private func fetchOAuthToken(authCode code: String) {
-        OAuth2Service().fetchAuthToken(code: code) {[weak self] result in
+        authService.fetchAuthToken(code: code) {[weak self] result in
             guard let self else {return}
             switch result {
             case .success(let authCode):
