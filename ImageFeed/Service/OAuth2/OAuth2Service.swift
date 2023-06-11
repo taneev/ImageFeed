@@ -7,13 +7,6 @@
 
 import Foundation
 
-enum NetworkError: Error {
-    case serverError(Int)
-    case transportError(Error)
-    case decodeError(Error)
-    case sessionError
-}
-
 final class OAuth2Service {
 
     private let tokenRequestURLString = "https://unsplash.com/oauth/token"

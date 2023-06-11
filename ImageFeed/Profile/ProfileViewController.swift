@@ -12,6 +12,9 @@ final class ProfileViewController: UIViewController {
     private let leftMargin: CGFloat = 16
     private let rightMargin: CGFloat = 16
 
+    private let tokenStorage = OAuth2TokenStorage()
+    private let profileService = ProfileService()
+
     private lazy var profileImageView: UIImageView = { createProfileImageView() }()
     private lazy var logoutButton: UIButton = { createLogoutButton() }()
 
@@ -25,10 +28,19 @@ final class ProfileViewController: UIViewController {
 
         addSubviewsAndConstraints()
 
-        // проверка верстки
-        usernameLabel.text = "Екатерина Новикова"
-        emailLabel.text = "@ekaterina_nov"
-        bioLabel.text = "Hello, world!"
+        if let token = tokenStorage.token {
+            profileService.fetchProfile(token) {[weak self] result in
+                guard let self else {return}
+                switch result {
+                case .success(let profile):
+                    self.usernameLabel.text = profile.name
+                    self.emailLabel.text = profile.loginName
+                    self.bioLabel.text = profile.bio
+                case .failure(let error):
+                    assertionFailure("user profile data fetch error: \(error)")
+                }
+            }
+        }
     }
 
     private func addSubviewsAndConstraints() {
