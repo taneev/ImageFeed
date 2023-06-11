@@ -12,5 +12,4 @@ struct ProfileResult: Decodable {
     let firstName: String
     let lastName: String
     let bio: String?
-    let profileImages: [String: String]?
 }
