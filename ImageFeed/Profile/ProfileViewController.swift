@@ -13,7 +13,7 @@ final class ProfileViewController: UIViewController {
     private let rightMargin: CGFloat = 16
 
     private let tokenStorage = OAuth2TokenStorage()
-    private let profileService = ProfileService()
+    private let profileService = ProfileService.shared
 
     private lazy var profileImageView: UIImageView = { createProfileImageView() }()
     private lazy var logoutButton: UIButton = { createLogoutButton() }()
@@ -27,20 +27,15 @@ final class ProfileViewController: UIViewController {
 
 
         addSubviewsAndConstraints()
+        
+        guard let profile = profileService.profile else {return}
+        updateProfileDetails(profile: profile)
+    }
 
-        if let token = tokenStorage.token {
-            profileService.fetchProfile(token) {[weak self] result in
-                guard let self else {return}
-                switch result {
-                case .success(let profile):
-                    self.usernameLabel.text = profile.name
-                    self.emailLabel.text = profile.loginName
-                    self.bioLabel.text = profile.bio
-                case .failure(_):
-                    break
-                }
-            }
-        }
+    private func updateProfileDetails(profile: Profile) {
+        self.usernameLabel.text = profile.name
+        self.emailLabel.text = profile.loginName
+        self.bioLabel.text = profile.bio
     }
 
     private func addSubviewsAndConstraints() {

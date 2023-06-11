@@ -9,10 +9,14 @@ import Foundation
 
 final class ProfileService {
 
+    static let shared = ProfileService()
+    
     private let networkClient = NetworkClient()
     private let profileURLPath = "/me"
     private var task: URLSessionTask?
     private var currentToken: String?
+
+    private(set) var profile: Profile?
 
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
 
@@ -27,7 +31,9 @@ final class ProfileService {
 
             switch result {
             case .success(let profileResult):
-                completion(.success(Profile(profileData: profileResult)))
+                let profile = Profile(profileData: profileResult)
+                self?.profile = profile
+                completion(.success(profile))
             case .failure(let error):
                 completion(.failure(error))
             }
