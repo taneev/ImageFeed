@@ -10,6 +10,7 @@ import Foundation
 final class OAuth2Service {
 
     private let tokenRequestURLString = "https://unsplash.com/oauth/token"
+    private let networkClient = NetworkClient()
     private var task: URLSessionTask?
     private var lastCode: String?
 
@@ -37,33 +38,17 @@ final class OAuth2Service {
         lastCode = code
 
         let request = makeAuthRequest(code: code)
-        let task = URLSession.shared.dataTask(with: request) {data, response, error in
-            DispatchQueue.main.async {
-                if let error {
-                    completion(.failure(NetworkError.transportError(error)))
-                    self.lastCode = nil
-                }
-                else if let data,
-                        let httpResponse = response as? HTTPURLResponse {
-                    if 200..<300 ~= httpResponse.statusCode {
-                        let decoder = JSONDecoder()
-                        do {
-                            let responseObject = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                            completion(.success(responseObject.accessToken))
-                        }
-                        catch {
-                            completion(.failure(NetworkError.decodeError(error)))
-                        }
-                    }
-                    else {
-                        completion(.failure(NetworkError.serverError(httpResponse.statusCode)))
-                    }
-                }
-                else {
-                    completion(.failure(NetworkError.sessionError))
-                }
-                self.task = nil
+        let task = networkClient.getDecodedObject(for: request, of: OAuthTokenResponseBody.self)
+        {   result in
+
+            switch result {
+            case .success(let authRequestData):
+                completion(.success(authRequestData.accessToken))
+            case .failure(let error):
+                completion(.failure(error))
+                self.lastCode = nil
             }
+            self.task = nil
         }
         self.task = task
         task.resume()
