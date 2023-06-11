@@ -39,7 +39,6 @@ final class NetworkClient {
                 queueAsyncCompletion(.failure(NetworkError.sessionError))
             }
         }
-        task.resume()
         return task
     }
 

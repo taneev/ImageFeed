@@ -36,8 +36,8 @@ final class ProfileViewController: UIViewController {
                     self.usernameLabel.text = profile.name
                     self.emailLabel.text = profile.loginName
                     self.bioLabel.text = profile.bio
-                case .failure(let error):
-                    assertionFailure("user profile data fetch error: \(error)")
+                case .failure(_):
+                    break
                 }
             }
         }
