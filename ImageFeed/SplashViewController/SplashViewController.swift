@@ -12,7 +12,6 @@ final class SplashViewController: UIViewController {
 
     private let authViewControllerSegueID = "AuthViewControllerSegue"
     private let authStorage = OAuth2TokenStorage()
-    private let authService = OAuth2Service()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,26 +50,10 @@ final class SplashViewController: UIViewController {
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
-    func authViewControllerDelegate(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        ProgressHUD.show()
-        dismiss(animated: true) {[weak self] in
-            self?.fetchOAuthToken(authCode: code)
-        }
-    }
-
-    private func fetchOAuthToken(authCode code: String) {
-        authService.fetchAuthToken(code: code) {[weak self] result in
-            guard let self else {return}
-            switch result {
-            case .success(let authCode):
-                self.authStorage.token = authCode // сохраняем полученный токен
-                self.switchToTabBarController() // переключаемся на TabBarController
-                ProgressHUD.dismiss()
-            case .failure(let error):
-                ProgressHUD.dismiss()
-                // TODO: написать обработку неуспешной авторизации
-                print("Authorization failed: \(error.localizedDescription)")
-            }
+    func authViewControllerDelegate(_ vc: AuthViewController, didGetToken token: String) {
+        self.authStorage.token = token // сохраняем полученный токен
+        vc.dismiss(animated: true) {[weak self] in
+            self?.switchToTabBarController()
         }
     }
 }
