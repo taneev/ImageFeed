@@ -10,6 +10,7 @@ import Foundation
 enum NetworkError: Error {
     case serverError(Int)
     case transportError(Error)
+    case JSONError
     case decodeError(Error)
     case sessionError
 }

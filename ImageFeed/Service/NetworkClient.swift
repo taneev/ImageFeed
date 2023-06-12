@@ -68,8 +68,15 @@ final class NetworkClient {
         return task
     }
 
-    func makeGetRequest(_ token: String, path: String, relativeTo baseUrl: URL = DefaultBaseURL) -> URLRequest {
-        var request = URLRequest(url: URL(string: path, relativeTo: baseUrl)!)
+    func makeGetRequest(_ token: String, path: String, relativeTo baseUrl: URL = DefaultBaseURL, requestParams: [String: String]? = nil) -> URLRequest {
+
+        var urlComponents = URLComponents(string: baseUrl.absoluteString)!
+        urlComponents.path = path
+        if let queryItems = requestParams?.map({URLQueryItem(name: $0.key, value: $0.value)}) {
+            urlComponents.queryItems = queryItems
+        }
+
+        var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 

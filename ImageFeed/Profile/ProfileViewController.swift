@@ -14,6 +14,7 @@ final class ProfileViewController: UIViewController {
 
     private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
 
     private lazy var profileImageView: UIImageView = { createProfileImageView() }()
     private lazy var logoutButton: UIButton = { createLogoutButton() }()
@@ -27,9 +28,26 @@ final class ProfileViewController: UIViewController {
 
 
         addSubviewsAndConstraints()
+
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+                        forName: ProfileImageService.DidChangeNotification,
+                        object: nil,
+                        queue: .main)
+                        {   [weak self] _ in
+                            guard let self = self else { return }
+                            self.updateAvatar()
+                        }
+        updateAvatar()
         
         guard let profile = profileService.profile else {return}
         updateProfileDetails(profile: profile)
+    }
+
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+              let url = URL(string: profileImageURL)
+        else { return }
+        
     }
 
     private func updateProfileDetails(profile: Profile) {
