@@ -14,8 +14,6 @@ final class ProfileViewController: UIViewController {
     private let rightMargin: CGFloat = 16
     private let avatarCornerRadius: CGFloat = 35
 
-
-    private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
 

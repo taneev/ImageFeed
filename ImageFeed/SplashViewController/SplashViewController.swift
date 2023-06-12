@@ -7,11 +7,12 @@
 
 import UIKit
 import ProgressHUD
+import SwiftKeychainWrapper
 
 final class SplashViewController: UIViewController {
 
+    private let tokenKey = "UnsplashBearerToken"
     private let authViewControllerSegueID = "AuthViewControllerSegue"
-    private let authStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
 
     override func viewDidLoad() {
@@ -21,7 +22,7 @@ final class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if let token = authStorage.token {
+        if let token = KeychainWrapper.standard.string(forKey: tokenKey) {
             UIBlockingProgressHUD.show()
             profileFetch(token: token)
         }
@@ -53,7 +54,12 @@ final class SplashViewController: UIViewController {
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewControllerDelegate(_ vc: AuthViewController, didGetToken token: String) {
-        self.authStorage.token = token // сохраняем полученный токен
+        // сохраняем полученный токен
+        let isSuccess = KeychainWrapper.standard.set(token, forKey: tokenKey)
+        if !isSuccess {
+            assertionFailure("Bearer token not saved in keychain")
+        }
+
         profileFetch(token: token)
         dismiss(animated: true)
     }
