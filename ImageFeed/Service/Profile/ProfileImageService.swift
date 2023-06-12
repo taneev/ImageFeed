@@ -24,8 +24,7 @@ final class ProfileImageService {
         let request = networkClient.makeGetRequest(token,
                                                    path: profileImageURLPath,
                                                    requestParams: ["username": username])
-        let task = networkClient.getDecodedObject(for: request,
-                                                  of: UserResult.self) { [weak self] result in
+        let task = networkClient.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             switch result {
             case .success(let userResult):
                 if let smallImageURLString = userResult.profileImage?["small"] {

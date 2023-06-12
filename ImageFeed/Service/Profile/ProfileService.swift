@@ -26,8 +26,8 @@ final class ProfileService {
         self.task?.cancel()
         currentToken = token
 
-        let task = networkClient.getDecodedObject(for: request, of: ProfileResult.self)
-        {   [weak self] result in
+        let task = networkClient.objectTask(for: request)
+        {   [weak self] (result: Result<ProfileResult, Error>) in
 
             switch result {
             case .success(let profileResult):

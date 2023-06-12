@@ -42,20 +42,17 @@ final class NetworkClient {
         return task
     }
 
-    func getDecodedObject<T>(for request: URLRequest,
-                             of type: T.Type,
+    func objectTask<T: Decodable>(for request: URLRequest,
                              decodingStrategy strategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase,
-                             completion: @escaping (Result<T, Error>)-> Void)
-    -> URLSessionTask where T:Decodable
+                             completion: @escaping (Result<T, Error>)-> Void) -> URLSessionTask
     {
-
         let task = getData(for: request) { result in
             switch result {
             case .success(let data):
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = strategy
                 do {
-                    let decodedObject = try decoder.decode(type, from: data)
+                    let decodedObject = try decoder.decode(T.self, from: data)
                     completion(.success(decodedObject))
                 }
                 catch {

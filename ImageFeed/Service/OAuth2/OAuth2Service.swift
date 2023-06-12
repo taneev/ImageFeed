@@ -38,17 +38,17 @@ final class OAuth2Service {
         lastCode = code
 
         let request = makeAuthRequest(code: code)
-        let task = networkClient.getDecodedObject(for: request, of: OAuthTokenResponseBody.self)
-        {   result in
+        let task = networkClient.objectTask(for: request)
+        {  [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
 
             switch result {
             case .success(let authRequestData):
                 completion(.success(authRequestData.accessToken))
             case .failure(let error):
                 completion(.failure(error))
-                self.lastCode = nil
+                self?.lastCode = nil
             }
-            self.task = nil
+            self?.task = nil
         }
         self.task = task
         task.resume()
