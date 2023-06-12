@@ -49,11 +49,13 @@ extension AuthViewController: WebViewViewControllerDelegate {
             switch result {
             case .success(let token):
                 self.delegate?.authViewControllerDelegate(self, didGetToken: token)
+            case .failure:
                 UIBlockingProgressHUD.dismiss()
-            case .failure(let error):
-                UIBlockingProgressHUD.dismiss()
-                // TODO: написать обработку неуспешной авторизации
-                print("Authorization failed: \(error.localizedDescription)")
+                let alert = AlertModel(title: "Что-то пошло не так(",
+                                       message: "Не удалось войти в систему",
+                                       buttonText: "Ок")
+                let alertPresenter = AlertPresenter(controller: self)
+                alertPresenter.showAlert(alert: alert)
             }
         }
     }

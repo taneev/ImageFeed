@@ -22,16 +22,8 @@ final class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
 
         if let token = authStorage.token {
-            profileService.fetchProfile(token) {[weak self] result in
-                switch result {
-                case .success:
-                    self?.switchToTabBarController()
-                case .failure:
-                    // TODO: разобраться что делать в таком случае
-                    break
-                }
-            }
-
+            UIBlockingProgressHUD.show()
+            profileFetch(token: token)
         }
         else {
             performSegue(withIdentifier: authViewControllerSegueID, sender: self)
@@ -66,15 +58,29 @@ extension SplashViewController: AuthViewControllerDelegate {
         dismiss(animated: true)
     }
 
+    private func alertAndSwitchToAuthViewController() {
+        let alert = AlertModel(title: "Что-то пошло не так(",
+                               message: "Не удалось войти в систему",
+                               buttonText: "Ок")
+        let alertPresenter = AlertPresenter(controller: self)
+        alertPresenter.showAlert(alert: alert) {[weak self] _ in
+            guard let self else {return}
+            performSegue(withIdentifier: self.authViewControllerSegueID, sender: self)
+        }
+    }
+
     func profileFetch(token: String) {
         profileService.fetchProfile(token) { [weak self] result in
+            guard let self else {return}
+
             switch result {
             case .success(let profile):
                 ProfileImageService.shared.fetchProfileImageURL(token, username: profile.username) { _ in }
-                self?.switchToTabBarController()
                 UIBlockingProgressHUD.dismiss()
+                self.switchToTabBarController()
             case .failure:
                 UIBlockingProgressHUD.dismiss()
+                self.alertAndSwitchToAuthViewController()
             }
         }
     }
