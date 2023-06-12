@@ -75,7 +75,9 @@ extension SplashViewController: AuthViewControllerDelegate {
 
             switch result {
             case .success(let profile):
+                // бросаем вдогонку запрос чтения url аватара, но не ждем здесь ответа
                 ProfileImageService.shared.fetchProfileImageURL(token, username: profile.username) { _ in }
+
                 UIBlockingProgressHUD.dismiss()
                 self.switchToTabBarController()
             case .failure:

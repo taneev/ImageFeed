@@ -6,11 +6,14 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
 
     private let leftMargin: CGFloat = 16
     private let rightMargin: CGFloat = 16
+    private let avatarCornerRadius: CGFloat = 35
+
 
     private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
@@ -47,8 +50,11 @@ final class ProfileViewController: UIViewController {
         guard let profileImageURL = ProfileImageService.shared.avatarURL,
               let url = URL(string: profileImageURL)
         else { return }
-        
-    }
+
+        let processor = RoundCornerImageProcessor(cornerRadius: avatarCornerRadius)
+        profileImageView.kf.setImage(with: url,
+                                     options: [.processor(processor)])
+        }
 
     private func updateProfileDetails(profile: Profile) {
         self.usernameLabel.text = profile.name

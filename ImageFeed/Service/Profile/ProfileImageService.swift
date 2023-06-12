@@ -22,8 +22,7 @@ final class ProfileImageService {
         task?.cancel()
 
         let request = networkClient.makeGetRequest(token,
-                                                   path: profileImageURLPath,
-                                                   requestParams: ["username": username])
+                                                   path: profileImageURLPath+"/\(username)")
         let task = networkClient.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             switch result {
             case .success(let userResult):
