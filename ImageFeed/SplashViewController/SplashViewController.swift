@@ -32,7 +32,7 @@ final class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        KeychainWrapper.standard.removeAllKeys()
         if let token = KeychainWrapper.standard.string(forKey: tokenKey) {
             UIBlockingProgressHUD.show()
             profileFetch(token: token)
@@ -78,15 +78,11 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
 
     private func presentAuthViewController() {
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        guard let authViewController = storyboard.instantiateViewController(withIdentifier: "authViewController") as? AuthViewController
-        else {
-            assertionFailure("AuthViewController couldn't be initialized")
-            return
-        }
+        let authViewController = AuthViewController()
+        let navigationController = UINavigationController(rootViewController: authViewController)
         authViewController.delegate = self
-        authViewController.modalPresentationStyle = .fullScreen
-        present(authViewController, animated: true)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true)
     }
 
     private func alertAndSwitchToAuthViewController() {
