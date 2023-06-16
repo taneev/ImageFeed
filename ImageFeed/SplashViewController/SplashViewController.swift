@@ -32,7 +32,7 @@ final class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        KeychainWrapper.standard.removeAllKeys()
+        // TEST: KeychainWrapper.standard.removeAllKeys()
         if let token = KeychainWrapper.standard.string(forKey: tokenKey) {
             UIBlockingProgressHUD.show()
             profileFetch(token: token)
@@ -55,11 +55,24 @@ final class SplashViewController: UIViewController {
             return
         }
 
+        let tabBarViewController = UITabBarController()
+
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        guard let tabBarViewController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as? TabBarController else {
-            assertionFailure("Could not instantiate TabBarController")
-            return
-        }
+        let imagesListViewController = storyboard.instantiateViewController(
+            withIdentifier: "ImagesListViewController"
+        )
+
+        let profileViewController = ProfileViewController()
+        profileViewController.tabBarItem = UITabBarItem(
+                    title: nil,
+                    image: UIImage(named: "tab_profile_active"),
+                    selectedImage: nil)
+
+        tabBarViewController.viewControllers = [imagesListViewController, profileViewController]
+        tabBarViewController.tabBar.barStyle = .default
+        tabBarViewController.tabBar.isTranslucent = true
+        tabBarViewController.tabBar.backgroundColor = .ypBlack
+        tabBarViewController.tabBar.tintColor = .ypWhite
         window.rootViewController = tabBarViewController
     }
 
@@ -71,6 +84,7 @@ extension SplashViewController: AuthViewControllerDelegate {
         let isSuccess = KeychainWrapper.standard.set(token, forKey: tokenKey)
         if !isSuccess {
             assertionFailure("Bearer token not saved in keychain")
+            return
         }
 
         profileFetch(token: token)

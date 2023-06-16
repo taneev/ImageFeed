@@ -27,7 +27,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-
+        view.backgroundColor = .ypBlack
         addSubviewsAndConstraints()
 
         profileImageServiceObserver = NotificationCenter.default.addObserver(

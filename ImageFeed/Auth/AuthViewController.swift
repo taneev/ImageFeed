@@ -40,7 +40,6 @@ extension AuthViewController {
     @objc private func authButtonDidTapped() {
         let webViewController = WebViewViewController()
         webViewController.delegate = self
-        webViewController.modalPresentationStyle = .overFullScreen
         navigationController?.navigationBar.isHidden = true
         navigationController?.pushViewController(webViewController, animated: true)
     }
@@ -90,9 +89,8 @@ extension AuthViewController {
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         UIBlockingProgressHUD.show()
-        vc.dismiss(animated: true) {[weak self] in
-            self?.fetchOAuthToken(authCode: code)
-        }
+        vc.navigationController?.popViewController(animated: true)
+        fetchOAuthToken(authCode: code)
     }
 
     private func fetchOAuthToken(authCode code: String) {
