@@ -38,12 +38,7 @@ final class AuthViewController: UIViewController {
 extension AuthViewController {
 
     @objc private func authButtonDidTapped() {
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        guard let webViewController = storyboard.instantiateViewController(withIdentifier: "WebViewViewController") as? WebViewViewController
-        else {
-            assertionFailure("Buu")
-            return
-        }
+        let webViewController = WebViewViewController()
         webViewController.delegate = self
         webViewController.modalPresentationStyle = .overFullScreen
         navigationController?.navigationBar.isHidden = true

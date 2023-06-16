@@ -34,9 +34,6 @@
                                 </constraints>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="nav_back_button"/>
-                                <connections>
-                                    <action selector="didTapBackButton:" destination="kqQ-Bj-acg" eventType="touchUpInside" id="7mF-BC-YU8"/>
-                                </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="E2R-7s-rpo">
                                 <rect key="frame" x="0.0" y="113" width="393" height="4"/>
@@ -57,10 +54,6 @@
                             <constraint firstAttribute="trailing" secondItem="wgF-nm-aSi" secondAttribute="trailing" id="yp4-7F-1Vp"/>
                         </constraints>
                     </view>
-                    <connections>
-                        <outlet property="progressView" destination="E2R-7s-rpo" id="4Gj-Ph-ahI"/>
-                        <outlet property="webView" destination="wgF-nm-aSi" id="Eu3-4e-U2B"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FXd-lN-3Tv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
