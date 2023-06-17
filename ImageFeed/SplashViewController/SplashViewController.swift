@@ -95,12 +95,11 @@ extension SplashViewController: AuthViewControllerDelegate {
                                buttonText: "Ок")
         let alertPresenter = AlertPresenter(controller: self)
         alertPresenter.showAlert(alert: alert) {[weak self] _ in
-            guard let self else {return}
-            presentAuthViewController()
+            self?.presentAuthViewController()
         }
     }
 
-    func profileFetch(token: String) {
+    private func profileFetch(token: String) {
         profileService.fetchProfile(token) {[weak self] result in
             guard let self else {return}
 

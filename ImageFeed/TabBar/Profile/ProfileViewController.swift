@@ -27,7 +27,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-
+        view.backgroundColor = .ypBlack
         addSubviewsAndConstraints()
 
         profileImageServiceObserver = NotificationCenter.default.addObserver(
@@ -51,7 +51,7 @@ final class ProfileViewController: UIViewController {
 
         let processor = RoundCornerImageProcessor(cornerRadius: avatarCornerRadius)
         profileImageView.kf.setImage(with: url,
-                                     options: [.processor(processor)])
+                                     options: [.processor(processor), .forceRefresh])
         }
 
     private func updateProfileDetails(profile: Profile) {
