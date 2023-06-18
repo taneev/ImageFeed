@@ -23,8 +23,8 @@ final class AlertPresenter {
 
     func showAlert(alert: AlertModel, completion: ((UIAlertAction) -> Void)? = nil) {
         let alertController = UIAlertController(title: alert.title,
-                                      message: alert.message,
-                                      preferredStyle: .alert)
+                                                message: alert.message,
+                                                preferredStyle: .alert)
         let action = UIAlertAction(title: alert.buttonText, style: .default, handler: completion)
         alertController.addAction(action)
         controller?.present(alertController, animated: true, completion: nil)

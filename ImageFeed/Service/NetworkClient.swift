@@ -12,7 +12,7 @@ final class NetworkClient {
     private let urlSession = URLSession.shared
 
     private func getData(for request: URLRequest,
-              completion: @escaping (Result<Data, Error>) -> Void ) -> URLSessionTask {
+                         completion: @escaping (Result<Data, Error>) -> Void ) -> URLSessionTask {
 
         let task = urlSession.dataTask(with: request) {data, response, error in
             if let error {
@@ -36,8 +36,8 @@ final class NetworkClient {
     }
 
     func objectTask<T: Decodable>(for request: URLRequest,
-                             decodingStrategy strategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase,
-                             completion: @escaping (Result<T, Error>)-> Void) -> URLSessionTask
+                                  decodingStrategy strategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase,
+                                  completion: @escaping (Result<T, Error>)-> Void) -> URLSessionTask
     {
         let task = getData(for: request) { result in
             switch result {
