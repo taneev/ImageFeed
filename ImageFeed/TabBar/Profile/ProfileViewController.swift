@@ -6,11 +6,16 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
 
     private let leftMargin: CGFloat = 16
     private let rightMargin: CGFloat = 16
+    private let avatarCornerRadius: CGFloat = 35
+
+    private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
 
     private lazy var profileImageView: UIImageView = { createProfileImageView() }()
     private lazy var logoutButton: UIButton = { createLogoutButton() }()
@@ -22,13 +27,39 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-
+        view.backgroundColor = .ypBlack
         addSubviewsAndConstraints()
+        updateAvatar()
 
-        // проверка верстки
-        usernameLabel.text = "Екатерина Новикова"
-        emailLabel.text = "@ekaterina_nov"
-        bioLabel.text = "Hello, world!"
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.DidChangeNotification,
+            object: nil,
+            queue: .main)
+        {   [weak self] _ in
+            guard let self = self else { return }
+            self.updateAvatar()
+        }
+
+        guard let profile = profileService.profile else {return}
+        updateProfileDetails(profile: profile)
+    }
+
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+              let url = URL(string: profileImageURL)
+        else { return }
+
+        let placeholder = UIImage(systemName: "person.crop.circle.fill")
+        let processor = RoundCornerImageProcessor(cornerRadius: avatarCornerRadius)
+        profileImageView.kf.setImage(with: url,
+                                     placeholder: placeholder,
+                                     options: [.processor(processor), .forceRefresh])
+    }
+
+    private func updateProfileDetails(profile: Profile) {
+        self.usernameLabel.text = profile.name
+        self.emailLabel.text = profile.loginName
+        self.bioLabel.text = profile.bio
     }
 
     private func addSubviewsAndConstraints() {
@@ -42,8 +73,7 @@ final class ProfileViewController: UIViewController {
     }
 
     private func createProfileImageView() -> UIImageView {
-        let userpickStub = UIImage(systemName: "person.crop.circle.fill")
-        let profileImageView = UIImageView(image: userpickStub)
+        let profileImageView = UIImageView()
         profileImageView.tintColor = .ypGray
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(profileImageView)

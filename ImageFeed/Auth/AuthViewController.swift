@@ -8,12 +8,14 @@
 import UIKit
 
 protocol AuthViewControllerDelegate: AnyObject {
-    func authViewControllerDelegate(_ vc: AuthViewController, didAuthenticateWithCode code: String)
+    func authViewControllerDelegate(_ vc: AuthViewController, didGetToken token: String)
 }
 
 final class AuthViewController: UIViewController {
 
     private let webViewControllerSegueID = "ShowWebView"
+    private let authService = OAuth2Service()
+
     weak var delegate: AuthViewControllerDelegate?
 
     override func viewDidLoad() {
@@ -35,10 +37,30 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        delegate?.authViewControllerDelegate(self, didAuthenticateWithCode: code)
+        UIBlockingProgressHUD.show()
+        vc.dismiss(animated: true) {[weak self] in
+            self?.fetchOAuthToken(authCode: code)
+        }
+    }
+
+    private func fetchOAuthToken(authCode code: String) {
+        authService.fetchAuthToken(code: code) {[weak self] result in
+            guard let self else {return}
+            switch result {
+            case .success(let token):
+                self.delegate?.authViewControllerDelegate(self, didGetToken: token)
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                let alert = AlertModel(title: "Что-то пошло не так(",
+                                       message: "Не удалось войти в систему",
+                                       buttonText: "Ок")
+                let alertPresenter = AlertPresenter(controller: self)
+                alertPresenter.showAlert(alert: alert)
+            }
+        }
     }
 
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        dismiss(animated: true)
+        vc.dismiss(animated: true)
     }
 }
