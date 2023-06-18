@@ -57,7 +57,6 @@ extension ImagesListCell {
 
     private func createLikeButton() -> UIButton {
         let button = UIButton()
-        button.setImage(UIImage(named: "No Active.png"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(button)
         return button

@@ -48,7 +48,7 @@ extension ImagesListViewController {
         cell.imageDateLabel.text = imageDate
 
         let likeButtonImage = (indexPath.row % 2 == 0 ? UIImage(named: "Active.png") : UIImage(named: "No Active.png")) ?? UIImage()
-        cell.likeButton.imageView?.image = likeButtonImage
+        cell.likeButton.setImage(likeButtonImage, for: .normal) 
         cell.updateConstraintsIfNeeded()
     }
 
