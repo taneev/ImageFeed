@@ -43,7 +43,7 @@ final class SplashViewController: UIViewController {
     }
 
     private func createSplashLogoImageView() -> UIImageView {
-        let logoImage = UIImage(systemName: "practicumLogo")
+        let logoImage = UIImage(named: "practicumLogo")
         let logoImageView = UIImageView(image: logoImage)
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         return logoImageView
@@ -56,23 +56,24 @@ final class SplashViewController: UIViewController {
         }
 
         let tabBarViewController = UITabBarController()
-
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        let imagesListViewController = storyboard.instantiateViewController(
-            withIdentifier: "ImagesListViewController"
-        )
-
-        let profileViewController = ProfileViewController()
-        profileViewController.tabBarItem = UITabBarItem(
-                    title: nil,
-                    image: UIImage(named: "tab_profile_active"),
-                    selectedImage: nil)
-
-        tabBarViewController.viewControllers = [imagesListViewController, profileViewController]
         tabBarViewController.tabBar.barStyle = .default
         tabBarViewController.tabBar.isTranslucent = true
         tabBarViewController.tabBar.backgroundColor = .ypBlack
         tabBarViewController.tabBar.tintColor = .ypWhite
+
+        let imagesListViewController = ImagesListViewController()
+        imagesListViewController.tabBarItem = UITabBarItem(
+            title: nil,
+            image: UIImage(systemName: "rectangle.stack.fill"),
+            selectedImage: nil)
+
+        let profileViewController = ProfileViewController()
+        profileViewController.tabBarItem = UITabBarItem(
+            title: nil,
+            image: UIImage(named: "tab_profile_active"),
+            selectedImage: nil)
+
+        tabBarViewController.viewControllers = [imagesListViewController, profileViewController]
         window.rootViewController = tabBarViewController
     }
 
@@ -126,6 +127,4 @@ extension SplashViewController: AuthViewControllerDelegate {
             }
         }
     }
-
-
 }
