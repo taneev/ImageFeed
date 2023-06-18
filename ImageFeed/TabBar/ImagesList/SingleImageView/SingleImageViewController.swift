@@ -8,7 +8,7 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
-
+    
     var image: UIImage!{
         didSet {
             if isViewLoaded {
@@ -50,7 +50,7 @@ final class SingleImageViewController: UIViewController {
             applicationActivities: nil)
         present(activityViewController, animated: true)
     }
-
+    
     private func rescaleAndCenterImageInScrollView() {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale

@@ -20,9 +20,10 @@ final class ProfileService {
 
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
 
-        let request = networkClient.makeGetRequest(token, path: profileURLPath)
+        assert(Thread.isMainThread)
+        guard token != currentToken else {return}
 
-        if token == currentToken {return}
+        let request = networkClient.makeGetRequest(token, path: profileURLPath)
         self.task?.cancel()
         currentToken = token
 
@@ -32,13 +33,21 @@ final class ProfileService {
             switch result {
             case .success(let profileResult):
                 let profile = Profile(profileData: profileResult)
-                self?.profile = profile
-                completion(.success(profile))
+                DispatchQueue.main.async {[weak self] in
+                    guard let self else {return}
+                    self.profile = profile
+                    completion(.success(profile))
+                    self.task = nil
+                }
             case .failure(let error):
-                completion(.failure(error))
+                DispatchQueue.main.async {[weak self] in
+                    guard let self else {return}
+
+                    completion(.failure(error))
+                    self.currentToken = nil
+                    self.task = nil
+                }
             }
-            self?.currentToken = nil
-            self?.task = nil
         }
         self.task = task
         task.resume()

@@ -15,20 +15,30 @@ final class ProfileImageService {
     private let networkClient = NetworkClient()
     private let profileImageURLPath = "/users"
     private var task: URLSessionTask?
+    private var currentToken: String?
     private (set) var avatarURL: String?
 
     func fetchProfileImageURL(_ token: String, username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        guard token != currentToken else {return}
 
         task?.cancel()
+        currentToken = token
 
         let request = networkClient.makeGetRequest(token,
                                                    path: profileImageURLPath+"/\(username)")
         let task = networkClient.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+            guard let self else {return}
             switch result {
             case .success(let userResult):
                 if let smallImageURLString = userResult.profileImage?["small"] {
-                    self?.avatarURL = smallImageURLString
-                    completion(.success(smallImageURLString))
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self else {return}
+
+                        self.avatarURL = smallImageURLString
+                        completion(.success(smallImageURLString))
+                        self.task = nil
+                    }
                     NotificationCenter.default
                         .post(
                             name: ProfileImageService.DidChangeNotification,
@@ -36,12 +46,23 @@ final class ProfileImageService {
                             userInfo: ["URL": smallImageURLString])
                 }
                 else {
-                    completion(.failure(NetworkError.JSONError))
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self else {return}
+
+                        completion(.failure(NetworkError.JSONError))
+                        self.task = nil
+                        self.currentToken = nil
+                    }
                 }
             case .failure(let error):
-                completion(.failure(error))
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else {return}
+
+                    completion(.failure(error))
+                    self.task = nil
+                    self.currentToken = nil
+                }
             }
-            self?.task = nil
         }
         self.task = task
         task.resume()

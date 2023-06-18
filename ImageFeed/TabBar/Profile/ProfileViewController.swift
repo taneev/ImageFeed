@@ -29,17 +29,17 @@ final class ProfileViewController: UIViewController {
 
         view.backgroundColor = .ypBlack
         addSubviewsAndConstraints()
+        updateAvatar()
 
         profileImageServiceObserver = NotificationCenter.default.addObserver(
-                        forName: ProfileImageService.DidChangeNotification,
-                        object: nil,
-                        queue: .main)
-                        {   [weak self] _ in
-                            guard let self = self else { return }
-                            self.updateAvatar()
-                        }
-        updateAvatar()
-        
+            forName: ProfileImageService.DidChangeNotification,
+            object: nil,
+            queue: .main)
+        {   [weak self] _ in
+            guard let self = self else { return }
+            self.updateAvatar()
+        }
+
         guard let profile = profileService.profile else {return}
         updateProfileDetails(profile: profile)
     }
@@ -49,10 +49,12 @@ final class ProfileViewController: UIViewController {
               let url = URL(string: profileImageURL)
         else { return }
 
+        let placeholder = UIImage(systemName: "person.crop.circle.fill")
         let processor = RoundCornerImageProcessor(cornerRadius: avatarCornerRadius)
         profileImageView.kf.setImage(with: url,
-                                     options: [.processor(processor)])
-        }
+                                     placeholder: placeholder,
+                                     options: [.processor(processor), .forceRefresh])
+    }
 
     private func updateProfileDetails(profile: Profile) {
         self.usernameLabel.text = profile.name
@@ -71,8 +73,7 @@ final class ProfileViewController: UIViewController {
     }
 
     private func createProfileImageView() -> UIImageView {
-        let userpickStub = UIImage(systemName: "person.crop.circle.fill")
-        let profileImageView = UIImageView(image: userpickStub)
+        let profileImageView = UIImageView()
         profileImageView.tintColor = .ypGray
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(profileImageView)

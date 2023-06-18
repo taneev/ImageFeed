@@ -31,24 +31,31 @@ final class OAuth2Service {
     }
 
     func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-
+        
         assert(Thread.isMainThread)
         if lastCode == code { return }
         task?.cancel()
         lastCode = code
 
         let request = makeAuthRequest(code: code)
-        let task = networkClient.objectTask(for: request)
-        {  [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+        let task = networkClient.objectTask(for: request){[weak self]
+            (result: Result<OAuthTokenResponseBody, Error>) in
 
             switch result {
             case .success(let authRequestData):
-                completion(.success(authRequestData.accessToken))
+                DispatchQueue.main.async {[weak self] in
+                    guard let self else {return}
+                    completion(.success(authRequestData.accessToken))
+                    self.task = nil
+                }
             case .failure(let error):
-                completion(.failure(error))
-                self?.lastCode = nil
+                DispatchQueue.main.async {[weak self] in
+                    guard let self else {return}
+                    completion(.failure(error))
+                    self.lastCode = nil
+                    self.task = nil
+                }
             }
-            self?.task = nil
         }
         self.task = task
         task.resume()

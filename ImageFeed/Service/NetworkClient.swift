@@ -12,39 +12,32 @@ final class NetworkClient {
     private let urlSession = URLSession.shared
 
     private func getData(for request: URLRequest,
-              resultIn queue: DispatchQueue = DispatchQueue.main,
-              completion: @escaping (Result<Data, Error>) -> Void ) -> URLSessionTask {
-
-        let queueAsyncCompletion = {result in
-            queue.async {
-                completion(result)
-            }
-        }
+                         completion: @escaping (Result<Data, Error>) -> Void ) -> URLSessionTask {
 
         let task = urlSession.dataTask(with: request) {data, response, error in
             if let error {
-                queueAsyncCompletion(.failure(NetworkError.transportError(error)))
+                completion(.failure(NetworkError.transportError(error)))
             }
             else if let data,
                     let response,
                     let httpResponse = response as? HTTPURLResponse {
                 if 200..<300 ~= httpResponse.statusCode {
-                    queueAsyncCompletion(.success(data))
+                    completion(.success(data))
                 }
                 else {
-                    queueAsyncCompletion(.failure(NetworkError.serverError(httpResponse.statusCode)))
+                    completion(.failure(NetworkError.serverError(httpResponse.statusCode)))
                 }
             }
             else {
-                queueAsyncCompletion(.failure(NetworkError.sessionError))
+                completion(.failure(NetworkError.sessionError))
             }
         }
         return task
     }
 
     func objectTask<T: Decodable>(for request: URLRequest,
-                             decodingStrategy strategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase,
-                             completion: @escaping (Result<T, Error>)-> Void) -> URLSessionTask
+                                  decodingStrategy strategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase,
+                                  completion: @escaping (Result<T, Error>)-> Void) -> URLSessionTask
     {
         let task = getData(for: request) { result in
             switch result {
@@ -79,6 +72,4 @@ final class NetworkClient {
 
         return request
     }
-
-
 }
