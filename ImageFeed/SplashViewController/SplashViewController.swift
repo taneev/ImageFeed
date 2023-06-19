@@ -32,7 +32,7 @@ final class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        // TEST: KeychainWrapper.standard.removeAllKeys()
         if let token = KeychainWrapper.standard.string(forKey: tokenKey) {
             UIBlockingProgressHUD.show()
             profileFetch(token: token)
@@ -43,7 +43,7 @@ final class SplashViewController: UIViewController {
     }
 
     private func createSplashLogoImageView() -> UIImageView {
-        let logoImage = UIImage(systemName: "practicumLogo")
+        let logoImage = UIImage(named: "practicumLogo")
         let logoImageView = UIImageView(image: logoImage)
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         return logoImageView
@@ -55,11 +55,25 @@ final class SplashViewController: UIViewController {
             return
         }
 
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        guard let tabBarViewController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as? TabBarController else {
-            assertionFailure("Could not instantiate TabBarController")
-            return
-        }
+        let tabBarViewController = UITabBarController()
+        tabBarViewController.tabBar.barStyle = .default
+        tabBarViewController.tabBar.isTranslucent = true
+        tabBarViewController.tabBar.backgroundColor = .ypBlack
+        tabBarViewController.tabBar.tintColor = .ypWhite
+
+        let imagesListViewController = ImagesListViewController()
+        imagesListViewController.tabBarItem = UITabBarItem(
+            title: nil,
+            image: UIImage(systemName: "rectangle.stack.fill"),
+            selectedImage: nil)
+
+        let profileViewController = ProfileViewController()
+        profileViewController.tabBarItem = UITabBarItem(
+            title: nil,
+            image: UIImage(named: "tab_profile_active"),
+            selectedImage: nil)
+
+        tabBarViewController.viewControllers = [imagesListViewController, profileViewController]
         window.rootViewController = tabBarViewController
     }
 
@@ -71,6 +85,7 @@ extension SplashViewController: AuthViewControllerDelegate {
         let isSuccess = KeychainWrapper.standard.set(token, forKey: tokenKey)
         if !isSuccess {
             assertionFailure("Bearer token not saved in keychain")
+            return
         }
 
         profileFetch(token: token)
@@ -78,15 +93,11 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
 
     private func presentAuthViewController() {
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        guard let authViewController = storyboard.instantiateViewController(withIdentifier: "authViewController") as? AuthViewController
-        else {
-            assertionFailure("AuthViewController couldn't be initialized")
-            return
-        }
+        let authViewController = AuthViewController()
+        let navigationController = UINavigationController(rootViewController: authViewController)
         authViewController.delegate = self
-        authViewController.modalPresentationStyle = .fullScreen
-        present(authViewController, animated: true)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true)
     }
 
     private func alertAndSwitchToAuthViewController() {
@@ -116,6 +127,4 @@ extension SplashViewController: AuthViewControllerDelegate {
             }
         }
     }
-
-
 }

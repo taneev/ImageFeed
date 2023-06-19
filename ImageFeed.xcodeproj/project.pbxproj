@@ -11,7 +11,6 @@
 		22092AEE2A1946D7002D70A4 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22092AED2A1946D7002D70A4 /* UIColor+Extensions.swift */; };
 		22305BA62A37613100D5B5AD /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 22305BA52A37613100D5B5AD /* Kingfisher */; };
 		22305BA92A37A1DF00D5B5AD /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 22305BA82A37A1DF00D5B5AD /* SwiftKeychainWrapper */; };
-		22305BAB2A37B51E00D5B5AD /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22305BAA2A37B51E00D5B5AD /* TabBarController.swift */; };
 		224982FA2A2B707100A85FDB /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224982F92A2B707100A85FDB /* AuthViewController.swift */; };
 		224982FD2A2B72F800A85FDB /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224982FC2A2B72F800A85FDB /* WebViewViewController.swift */; };
 		224982FF2A2B7E0200A85FDB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224982FE2A2B7E0200A85FDB /* Constants.swift */; };
@@ -41,7 +40,6 @@
 /* Begin PBXFileReference section */
 		22092AD42A12E00D002D70A4 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		22092AED2A1946D7002D70A4 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
-		22305BAA2A37B51E00D5B5AD /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabBarController.swift; path = ImageFeed/TabBar/TabBarController.swift; sourceTree = SOURCE_ROOT; };
 		224982F92A2B707100A85FDB /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		224982FC2A2B72F800A85FDB /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
 		224982FE2A2B7E0200A85FDB /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -94,7 +92,6 @@
 		22305BAC2A37BB2600D5B5AD /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
-				22305BAA2A37B51E00D5B5AD /* TabBarController.swift */,
 				227E4E522A0D89D300AFF8FA /* Profile */,
 				22FDE7332A0023560089302F /* ImagesList */,
 			);
@@ -307,7 +304,6 @@
 				22FA93A42A360B2F002B7348 /* ProfileService.swift in Sources */,
 				224982FD2A2B72F800A85FDB /* WebViewViewController.swift in Sources */,
 				22AF7A9C2A2CD4B900B6FC9F /* OAuth2Service.swift in Sources */,
-				22305BAB2A37B51E00D5B5AD /* TabBarController.swift in Sources */,
 				22FDE7322A0023200089302F /* ImagesListCell.swift in Sources */,
 				227E4E542A0D89FD00AFF8FA /* ProfileViewController.swift in Sources */,
 				22AF7AA02A2CFC4F00B6FC9F /* SplashViewController.swift in Sources */,
