@@ -49,6 +49,7 @@ final class ImagesListService {
                     let receivedPhotos = photoResults.map{Photo(photoResult: $0)}
                     self?.photos.append(contentsOf: receivedPhotos)
                     self?.task = nil
+                    self?.lastLoadedPage = nextPage
 
                     NotificationCenter.default
                         .post(
