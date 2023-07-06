@@ -19,7 +19,7 @@ final class ImagesListService {
     private let networkClient = NetworkClient()
     private let imageListURLPath = "/photos"
     private let perPage = 10
-    private var task: URLSessionTask?
+    private var currentTask: URLSessionTask?
 
     private var lastLoadedPage: Int?
 
@@ -28,7 +28,7 @@ final class ImagesListService {
             assertionFailure("Token is not set")
             return
         }
-        guard task == nil else {return}
+        guard currentTask == nil else {return}
 
         let nextPage = lastLoadedPage == nil ? 1 : lastLoadedPage! + 1
 
@@ -48,7 +48,7 @@ final class ImagesListService {
 
                     let receivedPhotos = photoResults.map{Photo(photoResult: $0)}
                     self?.photos.append(contentsOf: receivedPhotos)
-                    self?.task = nil
+                    self?.currentTask = nil
                     self?.lastLoadedPage = nextPage
 
                     NotificationCenter.default
@@ -58,11 +58,12 @@ final class ImagesListService {
                 }
             case .failure:
                 DispatchQueue.main.async {[weak self] in
-                    self?.task = nil
+                    self?.currentTask = nil
                 }
                 assertionFailure("Ошибка получения списка фото")
             }
         }
         task.resume()
+        currentTask = task
     }
 }
