@@ -6,16 +6,20 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ImagesListViewController: UIViewController {
 
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
     private lazy var tableView: UITableView = { createTableView() }()
 
+    private let imageListService = ImagesListService.shared
+
     private let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
     private let mockImageDate = Date()
 
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private var photos: [Photo] = []
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -32,24 +36,63 @@ final class ImagesListViewController: UIViewController {
         tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .ypBlack
+
+        NotificationCenter.default.addObserver(
+            forName: ImagesListService.DidChangeNotification,
+            object: nil,
+            queue: .main) {[weak self] notification in
+                guard let self,
+                      let receivedPhotos = notification.object as? [Photo] else {return}
+                self.updateTableViewAnimated(receivedPhotos)
+            }
+        if photos.isEmpty {
+            imageListService.fetchPhotosNextPage()
+        }
     }
 }
 
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath)
     {
-        cell.backgroundColor = .ypBlack
-        guard let image = UIImage(named: photosName[indexPath.row]) else {
+        let thumbImageURL = photos[indexPath.row].thumbImageURL
+        guard let url = URL(string: thumbImageURL) else {
+            assertionFailure("thumbnail image URL is not valid for index \(indexPath.row)")
             return
         }
-        cell.cellImage.image = image
 
-        let imageDate = dateFormatter.string(from: mockImageDate)
-        cell.imageDateLabel.text = imageDate
+        cell.backgroundColor = .ypBlack
+        cell.cellImage.backgroundColor = .ypWhite
+        cell.cellImage.alpha = 0.5
+
+        let placeholder = ImagePlaceholderView()
+        cell.cellImage.kf.indicatorType = .activity
+        cell.cellImage.kf.setImage(with: url,
+                                   placeholder: placeholder) {[weak self] _ in
+
+            self?.tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+
+        if let imageDate = photos[indexPath.row].createdAt {
+            let imageDateString = dateFormatter.string(from: imageDate)
+            cell.imageDateLabel.text = imageDateString
+        }
+        else {
+            cell.imageDateLabel.text = ""
+        }
 
         let likeButtonImage = (indexPath.row % 2 == 0 ? UIImage(named: "Active.png") : UIImage(named: "No Active.png")) ?? UIImage()
         cell.likeButton.setImage(likeButtonImage, for: .normal) 
         cell.updateConstraintsIfNeeded()
+    }
+
+    private func updateTableViewAnimated(_ receivedPhotos: [Photo]) {
+        tableView.performBatchUpdates {
+            let lastAddedPhotosRange = photos.count ..< photos.count + receivedPhotos.count
+            let lastAddedIndexPaths: [IndexPath] = lastAddedPhotosRange.map{IndexPath(row: $0, section: 0)}
+
+            photos.append(contentsOf: receivedPhotos)
+            tableView.insertRows(at: lastAddedIndexPaths, with: .automatic)
+        } completion: { _ in}
     }
 
     private func createTableView() -> UITableView {
@@ -88,17 +131,15 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let cellImage = UIImage(named: photosName[indexPath.row]) else {
+        let cellImageSize = photos[indexPath.row].size
+
+        if cellImageSize.width == 0 {
             return 0
         }
 
-        if cellImage.size.width == 0 {
-            return 0
-        }
+        let imageScaleFactor = (tableView.bounds.width - imageInsets.left - imageInsets.right) / cellImageSize.width
 
-        let imageScaleFactor = (tableView.bounds.width - imageInsets.left - imageInsets.right) / cellImage.size.width
-
-        let imageViewHeight = cellImage.size.height * imageScaleFactor
+        let imageViewHeight = cellImageSize.height * imageScaleFactor
         let cellHeight = imageViewHeight + imageInsets.bottom + imageInsets.top
 
         return cellHeight
@@ -109,7 +150,7 @@ extension ImagesListViewController: UITableViewDelegate {
 extension ImagesListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        return photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -120,6 +161,12 @@ extension ImagesListViewController: UITableViewDataSource {
 
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row + 1 == photos.count {
+            imageListService.fetchPhotosNextPage()
+        }
     }
 
 }

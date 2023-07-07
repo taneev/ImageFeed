@@ -18,7 +18,7 @@ final class ImagesListService {
 
     private let networkClient = NetworkClient()
     private let imageListURLPath = "/photos"
-    private let perPage = 10
+    private let pageSize = 10
     private var currentTask: URLSessionTask?
 
     private var lastLoadedPage: Int?
@@ -34,7 +34,7 @@ final class ImagesListService {
 
         let requestParams = [
             "page": "\(nextPage)",
-            "per_page": "\(perPage)"]
+            "per_page": "\(pageSize)"]
 
         let request = networkClient.makeGetRequest(token,
                                                    path: imageListURLPath,
@@ -45,16 +45,17 @@ final class ImagesListService {
             switch result {
             case .success(let photoResults):
                 DispatchQueue.main.async {[weak self] in
+                    guard let self else {return}
 
                     let receivedPhotos = photoResults.map{Photo(photoResult: $0)}
-                    self?.photos.append(contentsOf: receivedPhotos)
-                    self?.currentTask = nil
-                    self?.lastLoadedPage = nextPage
+                    self.photos.append(contentsOf: receivedPhotos)
+                    self.currentTask = nil
+                    self.lastLoadedPage = nextPage
 
                     NotificationCenter.default
                         .post(
                             name: ImagesListService.DidChangeNotification,
-                            object: self)
+                            object: receivedPhotos)
                 }
             case .failure:
                 DispatchQueue.main.async {[weak self] in
