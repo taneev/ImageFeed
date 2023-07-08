@@ -11,9 +11,22 @@ final class ImagesListCell: UITableViewCell {
 
     static let reuseIdentifier = "ImagesListCell"
 
+    weak var delegate: ImagesListCellDelegate?
+
     lazy var imageDateLabel: UILabel = { createDateLabel() }()
     lazy var likeButton: UIButton = { createLikeButton() }()
     lazy var cellImage: UIImageView = { createImageView() }()
+
+    private let isLikedImage = UIImage(named: "Active.png") ?? UIImage()
+    private let isUnlikedImage = UIImage(named: "No Active.png") ?? UIImage()
+
+    private var isLiked: Bool = false {
+        didSet {
+            let likeButtonImage = isLiked ? isLikedImage : isUnlikedImage
+            likeButton.setImage(likeButtonImage, for: .normal)
+        }
+    }
+
     private var didSetupConstraints: Bool = false
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -53,6 +66,7 @@ final class ImagesListCell: UITableViewCell {
     }
 }
 
+// MARK: верстка ячейки
 extension ImagesListCell {
     private func createDateLabel() -> UILabel {
         let dateLabel = UILabel()
@@ -65,6 +79,7 @@ extension ImagesListCell {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(button)
+        button.addTarget(self, action: #selector(likeButtonDidTapped), for: .touchUpInside)
         return button
     }
 
@@ -75,5 +90,16 @@ extension ImagesListCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(imageView)
         return imageView
+    }
+}
+
+// MARK: основная функциональность ячейки
+extension ImagesListCell {
+    @objc private func likeButtonDidTapped() {
+        delegate?.imageListCellDidTapLike(self)
+    }
+
+    func setIsLike(to isLike: Bool) {
+        self.isLiked = isLike
     }
 }

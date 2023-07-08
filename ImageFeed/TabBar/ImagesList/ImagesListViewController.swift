@@ -16,7 +16,6 @@ final class ImagesListViewController: UIViewController {
     private let imageListService = ImagesListService.shared
 
     private let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
-    private let mockImageDate = Date()
 
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private var photos: [Photo] = []
@@ -79,9 +78,7 @@ extension ImagesListViewController {
         else {
             cell.imageDateLabel.text = ""
         }
-
-        let likeButtonImage = (indexPath.row % 2 == 0 ? UIImage(named: "Active.png") : UIImage(named: "No Active.png")) ?? UIImage()
-        cell.likeButton.setImage(likeButtonImage, for: .normal) 
+        cell.setIsLike(to: photos[indexPath.row].isLiked)
         cell.updateConstraintsIfNeeded()
     }
 
@@ -92,7 +89,7 @@ extension ImagesListViewController {
 
             photos.append(contentsOf: receivedPhotos)
             tableView.insertRows(at: lastAddedIndexPaths, with: .automatic)
-        } completion: { _ in}
+        }
     }
 
     private func createTableView() -> UITableView {
@@ -159,6 +156,7 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
 
+        imageListCell.delegate = self
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
@@ -166,6 +164,30 @@ extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row + 1 == photos.count {
             imageListService.fetchPhotosNextPage()
+        }
+    }
+}
+
+extension ImagesListViewController: ImagesListCellDelegate {
+
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {return}
+
+        UIBlockingProgressHUD.show()
+        let photo = photos[indexPath.row]
+        imageListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) {[weak self] result in
+            guard let self else {return}
+
+            switch result {
+            case .success(let isLiked):
+                self.photos[indexPath.row].setIsLiked(to: isLiked)
+                cell.setIsLike(to: isLiked)
+                UIBlockingProgressHUD.dismiss()
+            case .failure(let error):
+                // TODO: добавить обработку ошибки работы сервиса изменения лайка
+                assertionFailure("Something went wrong: like is not changed. \(error)")
+                UIBlockingProgressHUD.dismiss()
+            }
         }
     }
 

@@ -88,10 +88,11 @@ final class ImagesListService {
         let httpMethod = isLike ? "POST" : "DELETE"
         let request = networkClient.makeRequest(token, path: urlPath, httpMethod: httpMethod)
 
-        var task = networkClient.objectTask(for: request) {(result: Result<LikePhotoResult, Error>) in
+        let task = networkClient.objectTask(for: request) {(result: Result<LikePhotoResult, Error>) in
             switch result {
             case .success(let likePhotoResult):
                 DispatchQueue.main.async {
+                    self.setIsLike(for: photoId, to: isLike)
                     completion(.success(likePhotoResult.photo.likedByUser))
                 }
             case .failure(let error):
@@ -102,4 +103,16 @@ final class ImagesListService {
         }
         task.resume()
     }
+}
+
+extension ImagesListService {
+
+    private func setIsLike(for photoId: String, to isLiked: Bool) {
+        guard let index = self.photos.firstIndex(where: {$0.id == photoId}),
+              self.photos[index].isLiked != isLiked
+        else {return}
+
+        self.photos[index].setIsLiked(to: isLiked)
+    }
+    
 }
