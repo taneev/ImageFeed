@@ -25,3 +25,7 @@ struct UrlsResult: Decodable {
 struct PhotoResults: Decodable {
     var photoResults: [PhotoResult]
 }
+
+struct LikePhotoResult: Decodable {
+    var photo: PhotoResult
+}

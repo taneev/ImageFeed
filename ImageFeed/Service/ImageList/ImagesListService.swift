@@ -18,13 +18,20 @@ final class ImagesListService {
 
     private let networkClient = NetworkClient()
     private let imageListURLPath = "/photos"
+    private let likeURLPathFormat = "/photos/%@/like"
     private let pageSize = 10
     private var currentTask: URLSessionTask?
+
+    private var token: String? {
+        get {
+            KeychainWrapper.standard.string(forKey: tokenKey)
+        }
+    }
 
     private var lastLoadedPage: Int?
 
     func fetchPhotosNextPage() {
-        guard let token = KeychainWrapper.standard.string(forKey: tokenKey) else {
+        guard let token else {
             assertionFailure("Token is not set")
             return
         }
@@ -66,5 +73,33 @@ final class ImagesListService {
         }
         task.resume()
         currentTask = task
+    }
+
+    func changeLike(photoId: String,
+                    isLike: Bool,
+                    _ completion: @escaping (Result<Bool, Error>) -> Void) {
+
+        guard let token else {
+            assertionFailure("Token is not set")
+            return
+        }
+
+        let urlPath = String(format: likeURLPathFormat, photoId)
+        let httpMethod = isLike ? "POST" : "DELETE"
+        let request = networkClient.makeRequest(token, path: urlPath, httpMethod: httpMethod)
+
+        var task = networkClient.objectTask(for: request) {(result: Result<LikePhotoResult, Error>) in
+            switch result {
+            case .success(let likePhotoResult):
+                DispatchQueue.main.async {
+                    completion(.success(likePhotoResult.photo.likedByUser))
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+        task.resume()
     }
 }

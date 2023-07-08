@@ -58,7 +58,11 @@ final class NetworkClient {
         return task
     }
 
-    func makeGetRequest(_ token: String, path: String, relativeTo baseUrl: URL = DefaultBaseURL, requestParams: [String: String]? = nil) -> URLRequest {
+    func makeRequest(_ token: String,
+                     path: String,
+                     httpMethod: String,
+                     relativeTo baseUrl: URL = DefaultBaseURL,
+                     requestParams: [String: String]? = nil) -> URLRequest {
 
         var urlComponents = URLComponents(string: baseUrl.absoluteString)!
         urlComponents.path = path
@@ -67,8 +71,19 @@ final class NetworkClient {
         }
 
         var request = URLRequest(url: urlComponents.url!)
-        request.httpMethod = "GET"
+        request.httpMethod = httpMethod
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        return request
+    }
+
+    func makeGetRequest(_ token: String, path: String, relativeTo baseUrl: URL = DefaultBaseURL, requestParams: [String: String]? = nil) -> URLRequest {
+
+        let request = makeRequest(token,
+                                  path: path,
+                                  httpMethod: "GET",
+                                  relativeTo: baseUrl,
+                                  requestParams: requestParams)
 
         return request
     }
