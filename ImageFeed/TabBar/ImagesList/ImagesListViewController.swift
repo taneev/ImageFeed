@@ -17,7 +17,6 @@ final class ImagesListViewController: UIViewController {
 
     private let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
 
-    //private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private var photos: [Photo] = []
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -53,21 +52,21 @@ final class ImagesListViewController: UIViewController {
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath)
     {
-        let thumbImageURL = photos[indexPath.row].thumbImageURL
-        guard let url = URL(string: thumbImageURL) else {
-            assertionFailure("thumbnail image URL is not valid for index \(indexPath.row)")
-            return
-        }
-
         cell.backgroundColor = .ypBlack
         cell.cellImage.backgroundColor = .ypWhite
         cell.cellImage.alpha = 0.5
 
         let placeholder = ImagePlaceholderView()
+        let thumbImageURL = photos[indexPath.row].thumbImageURL
+        guard let url = URL(string: thumbImageURL) else {
+            cell.cellImage.addSubview(placeholder)
+            return
+        }
+
         cell.cellImage.kf.indicatorType = .activity
         cell.cellImage.kf.setImage(with: url,
                                    placeholder: placeholder) {[weak self] _ in
-
+            cell.cellImage.alpha = 1
             self?.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
 
@@ -92,6 +91,17 @@ extension ImagesListViewController {
         }
     }
 
+    private func showError() {
+        let alertPresenter = AlertPresenter(controller: self)
+        let alert = AlertModel(title: "Что-то пошло не так (",
+                               message: "Не удалось изменить лайк",
+                               buttonText: "Ok")
+        alertPresenter.showAlert(alert: alert)
+    }
+}
+
+// MARK: - верстка
+extension ImagesListViewController {
     private func createTableView() -> UITableView {
         let tableView = UITableView()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
@@ -114,6 +124,7 @@ extension ImagesListViewController {
     }
 }
 
+// MARK: UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let singleImageViewController = SingleImageViewController()
@@ -140,7 +151,7 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 }
 
-
+// MARK: UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -165,6 +176,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - ImagesListCellDelegate
 extension ImagesListViewController: ImagesListCellDelegate {
 
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
@@ -180,9 +192,8 @@ extension ImagesListViewController: ImagesListCellDelegate {
             case .success(let isLiked):
                 self.photos[indexPath.row].setIsLiked(to: isLiked)
                 cell.setIsLike(to: isLiked)
-            case .failure(let error):
-                // TODO: добавить обработку ошибки работы сервиса изменения лайка
-                assertionFailure("Something went wrong: like is not changed. \(error)")
+            case .failure:
+                self.showError()
             }
         }
     }

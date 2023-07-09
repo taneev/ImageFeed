@@ -12,7 +12,7 @@ final class SingleImageViewController: UIViewController {
     var imageURL: String! {
         didSet {
             if isViewLoaded {
-                setAndRescaleImage(with: imageURL)
+                setAndRescaleImage()
             }
         }
     }
@@ -36,7 +36,7 @@ final class SingleImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setAndRescaleImage(with: imageURL)
+        setAndRescaleImage()
     }
 
     @objc private func didTapBackButton(_ sender: Any) {
@@ -55,8 +55,6 @@ final class SingleImageViewController: UIViewController {
 // MARK: - основная логика
 extension SingleImageViewController {
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
-        guard let image = imageView.image else {return}
-        
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
         view.layoutIfNeeded()
@@ -73,11 +71,12 @@ extension SingleImageViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
 
-    private func setAndRescaleImage(with urlString: String) {
-        guard let url = URL(string: urlString) else {
-            assertionFailure("Image url is not valid")
+    private func setAndRescaleImage() {
+        guard let url = URL(string: imageURL) else {
+            print("Image url is not valid")
             return
         }
+
         UIBlockingProgressHUD.show()
         imageView.kf.setImage(with: url) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
@@ -85,7 +84,26 @@ extension SingleImageViewController {
             case .success(let resultImage):
                 self?.rescaleAndCenterImageInScrollView(image: resultImage.image)
             case .failure:
-                assertionFailure("Couldn't get full size image")
+                self?.showError()
+            }
+        }
+    }
+
+    private func showError() {
+        let alertPresenter = ImageSetAlertPresenter(controller: self)
+
+        let alertTitle = "Что-то пошло не так."
+        let alertMessage = "Попробовать ещё раз?"
+        let retryActionTitle = "Повторить"
+        let cancelActionTitle = "Не надо"
+        let alert = ImageSetAlertModel(title: alertTitle,
+                                       message: alertMessage,
+                                       RetryButtonText: retryActionTitle,
+                                       CancelButtonText: cancelActionTitle)
+
+        alertPresenter.showAlert(alert: alert) { [weak self] action in
+            if action.title == retryActionTitle {
+                self?.setAndRescaleImage()
             }
         }
     }
