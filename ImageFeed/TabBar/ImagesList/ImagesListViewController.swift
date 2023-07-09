@@ -17,7 +17,7 @@ final class ImagesListViewController: UIViewController {
 
     private let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
 
-    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    //private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private var photos: [Photo] = []
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -117,12 +117,9 @@ extension ImagesListViewController {
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let singleImageViewController = SingleImageViewController()
-        guard let image = UIImage(named: photosName[indexPath.row]) else {
-            assertionFailure("Cannot find image \(indexPath.row)")
-            return
-        }
+        let imageURL = photos[indexPath.row].largeImageURL
 
-        singleImageViewController.image = image
+        singleImageViewController.imageURL = imageURL
         singleImageViewController.modalPresentationStyle = .fullScreen
         present(singleImageViewController, animated: true)
     }
@@ -178,15 +175,14 @@ extension ImagesListViewController: ImagesListCellDelegate {
         imageListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) {[weak self] result in
             guard let self else {return}
 
+            UIBlockingProgressHUD.dismiss()
             switch result {
             case .success(let isLiked):
                 self.photos[indexPath.row].setIsLiked(to: isLiked)
                 cell.setIsLike(to: isLiked)
-                UIBlockingProgressHUD.dismiss()
             case .failure(let error):
                 // TODO: добавить обработку ошибки работы сервиса изменения лайка
                 assertionFailure("Something went wrong: like is not changed. \(error)")
-                UIBlockingProgressHUD.dismiss()
             }
         }
     }

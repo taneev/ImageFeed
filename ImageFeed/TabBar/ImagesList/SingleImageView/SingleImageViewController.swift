@@ -9,10 +9,10 @@ import UIKit
 
 final class SingleImageViewController: UIViewController {
     
-    var image: UIImage!{
+    var imageURL: String! {
         didSet {
             if isViewLoaded {
-                rescaleAndCenterImageInScrollView()
+                setAndRescaleImage(with: imageURL)
             }
         }
     }
@@ -36,7 +36,7 @@ final class SingleImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        rescaleAndCenterImageInScrollView()
+        setAndRescaleImage(with: imageURL)
     }
 
     @objc private func didTapBackButton(_ sender: Any) {
@@ -44,14 +44,19 @@ final class SingleImageViewController: UIViewController {
     }
 
     @objc private func didTapShareButton(_ sender: Any) {
-        guard let image else {return}
+        guard let image = imageView.image else {return}
         let activityViewController = UIActivityViewController(
             activityItems: [image],
             applicationActivities: nil)
         present(activityViewController, animated: true)
     }
-    
-    private func rescaleAndCenterImageInScrollView() {
+}
+
+// MARK: - основная логика
+extension SingleImageViewController {
+    private func rescaleAndCenterImageInScrollView(image: UIImage) {
+        guard let image = imageView.image else {return}
+        
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
         view.layoutIfNeeded()
@@ -67,12 +72,29 @@ final class SingleImageViewController: UIViewController {
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
+
+    private func setAndRescaleImage(with urlString: String) {
+        guard let url = URL(string: urlString) else {
+            assertionFailure("Image url is not valid")
+            return
+        }
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(with: url) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            switch result {
+            case .success(let resultImage):
+                self?.rescaleAndCenterImageInScrollView(image: resultImage.image)
+            case .failure:
+                assertionFailure("Couldn't get full size image")
+            }
+        }
+    }
 }
 
+// MARK: - верстка
 extension SingleImageViewController {
     private func setupImageView() -> UIImageView {
         let imageView = UIImageView()
-        imageView.image = image
         return imageView
     }
 
@@ -142,6 +164,7 @@ extension SingleImageViewController {
         )
     }
 }
+
 
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
