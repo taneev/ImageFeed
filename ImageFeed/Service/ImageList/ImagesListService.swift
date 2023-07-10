@@ -22,16 +22,10 @@ final class ImagesListService {
     private let pageSize = 10
     private var currentTask: URLSessionTask?
 
-    private var token: String? {
-        get {
-            KeychainWrapper.standard.string(forKey: tokenKey)
-        }
-    }
-
     private var lastLoadedPage: Int?
 
     func fetchPhotosNextPage() {
-        guard let token else {
+        guard let token = OAuth2TokenStorage().token else {
             assertionFailure("Token is not set")
             return
         }
@@ -79,7 +73,7 @@ final class ImagesListService {
                     isLike: Bool,
                     _ completion: @escaping (Result<Bool, Error>) -> Void) {
 
-        guard let token else {
+        guard let token = OAuth2TokenStorage().token else {
             assertionFailure("Token is not set")
             return
         }
