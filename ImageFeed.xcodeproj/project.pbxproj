@@ -119,9 +119,17 @@
 			children = (
 				224982F92A2B707100A85FDB /* AuthViewController.swift */,
 				224982FC2A2B72F800A85FDB /* WebViewViewController.swift */,
-				22FA93B62A373472002B7348 /* AlertPresenter.swift */,
 			);
 			path = Auth;
+			sourceTree = "<group>";
+		};
+		225C19732A5C8D9A00703A52 /* AlertPresenters */ = {
+			isa = PBXGroup;
+			children = (
+				225C196D2A5B42AA00703A52 /* ImageSetAlertPresenter.swift */,
+				22FA93B62A373472002B7348 /* AlertPresenter.swift */,
+			);
+			path = AlertPresenters;
 			sourceTree = "<group>";
 		};
 		227E4E522A0D89D300AFF8FA /* Profile */ = {
@@ -220,6 +228,7 @@
 		22FDE71C29FEB6B00089302F /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				225C19732A5C8D9A00703A52 /* AlertPresenters */,
 				22FDE71D29FEB6B00089302F /* AppDelegate.swift */,
 				22FDE71F29FEB6B00089302F /* SceneDelegate.swift */,
 				224982FE2A2B7E0200A85FDB /* Constants.swift */,
@@ -245,7 +254,6 @@
 				22FDE7312A0023200089302F /* ImagesListCell.swift */,
 				225C19422A589E0200703A52 /* ImagePlaceholderView.swift */,
 				225C196B2A59DCF500703A52 /* ImagesListCellDelegate.swift */,
-				225C196D2A5B42AA00703A52 /* ImageSetAlertPresenter.swift */,
 			);
 			path = ImagesList;
 			sourceTree = "<group>";

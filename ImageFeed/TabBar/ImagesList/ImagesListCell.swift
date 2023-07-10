@@ -99,7 +99,7 @@ extension ImagesListCell {
         delegate?.imageListCellDidTapLike(self)
     }
 
-    func setIsLike(to isLike: Bool) {
+    func setIsLiked(to isLike: Bool) {
         self.isLiked = isLike
     }
 }

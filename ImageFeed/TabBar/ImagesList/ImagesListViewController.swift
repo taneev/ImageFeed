@@ -77,7 +77,7 @@ extension ImagesListViewController {
         else {
             cell.imageDateLabel.text = ""
         }
-        cell.setIsLike(to: photos[indexPath.row].isLiked)
+        cell.setIsLiked(to: photos[indexPath.row].isLiked)
         cell.updateConstraintsIfNeeded()
     }
 
@@ -191,11 +191,10 @@ extension ImagesListViewController: ImagesListCellDelegate {
             switch result {
             case .success(let isLiked):
                 self.photos[indexPath.row].setIsLiked(to: isLiked)
-                cell.setIsLike(to: isLiked)
+                cell.setIsLiked(to: isLiked)
             case .failure:
                 self.showError()
             }
         }
     }
-
 }

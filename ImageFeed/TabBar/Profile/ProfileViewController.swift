@@ -156,5 +156,7 @@ final class ProfileViewController: UIViewController {
         window.rootViewController = splashViewController
     }
 
+    private func logout() {
 
+    }
 }
