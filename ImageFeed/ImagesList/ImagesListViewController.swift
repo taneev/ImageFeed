@@ -20,8 +20,7 @@ final class ImagesListViewController: UIViewController {
     private var photos: [Photo] = []
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
+        formatter.dateFormat = "dd MMMM yyyy"
         return formatter
     }()
 
@@ -82,12 +81,14 @@ extension ImagesListViewController {
     }
 
     private func updateTableViewAnimated(_ receivedPhotos: [Photo]) {
-        tableView.performBatchUpdates {
-            let lastAddedPhotosRange = photos.count ..< photos.count + receivedPhotos.count
+        tableView.performBatchUpdates { [weak self] in
+            guard let self else {return}
+
+            let lastAddedPhotosRange = self.photos.count ..< self.photos.count + receivedPhotos.count
             let lastAddedIndexPaths: [IndexPath] = lastAddedPhotosRange.map{IndexPath(row: $0, section: 0)}
 
-            photos.append(contentsOf: receivedPhotos)
-            tableView.insertRows(at: lastAddedIndexPaths, with: .automatic)
+            self.photos.append(contentsOf: receivedPhotos)
+            self.tableView.insertRows(at: lastAddedIndexPaths, with: .automatic)
         }
     }
 
