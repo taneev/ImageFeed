@@ -145,7 +145,15 @@ final class ProfileViewController: UIViewController {
     }
 
     @objc private func logoutButtonTapped() {
-        print("logout tapped")
+        OAuth2TokenStorage().token = nil
+        OAuth2CookieStorage.clean()
+
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        let splashViewController = SplashViewController()
+        window.rootViewController = splashViewController
     }
 
 
