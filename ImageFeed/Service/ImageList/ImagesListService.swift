@@ -56,7 +56,7 @@ final class ImagesListService {
                     NotificationCenter.default
                         .post(
                             name: ImagesListService.DidChangeNotification,
-                            object: receivedPhotos)
+                            object: self.photos.count)
                 }
             case .failure:
                 DispatchQueue.main.async {[weak self] in
@@ -86,7 +86,7 @@ final class ImagesListService {
             switch result {
             case .success(let likePhotoResult):
                 DispatchQueue.main.async {
-                    self.setIsLike(for: photoId, to: isLike)
+                    self.setIsLiked(for: photoId, to: isLike)
                     completion(.success(likePhotoResult.photo.likedByUser))
                 }
             case .failure(let error):
@@ -101,7 +101,7 @@ final class ImagesListService {
 
 extension ImagesListService {
 
-    private func setIsLike(for photoId: String, to isLiked: Bool) {
+    func setIsLiked(for photoId: String, to isLiked: Bool) {
         guard let index = self.photos.firstIndex(where: {$0.id == photoId}),
               self.photos[index].isLiked != isLiked
         else {return}
