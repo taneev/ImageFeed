@@ -92,8 +92,8 @@ extension ImagesListViewController {
     }
 
     private func showError() {
-        let alertPresenter = AlertPresenter(controller: self)
-        let alert = AlertModel(title: "Что-то пошло не так (",
+        let alertPresenter = ErrorAlertPresenter(controller: self)
+        let alert = ErrorAlertModel(title: "Что-то пошло не так (",
                                message: "Не удалось изменить лайк",
                                buttonText: "Ok")
         alertPresenter.showAlert(alert: alert)

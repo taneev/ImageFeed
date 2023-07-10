@@ -101,10 +101,10 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 self.delegate?.authViewControllerDelegate(self, didGetToken: token)
             case .failure:
                 UIBlockingProgressHUD.dismiss()
-                let alert = AlertModel(title: "Что-то пошло не так(",
+                let alert = ErrorAlertModel(title: "Что-то пошло не так(",
                                        message: "Не удалось войти в систему",
                                        buttonText: "Ок")
-                let alertPresenter = AlertPresenter(controller: self)
+                let alertPresenter = ErrorAlertPresenter(controller: self)
                 alertPresenter.showAlert(alert: alert)
             }
         }

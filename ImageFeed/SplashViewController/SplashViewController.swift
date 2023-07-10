@@ -95,10 +95,10 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
 
     private func alertAndSwitchToAuthViewController() {
-        let alert = AlertModel(title: "Что-то пошло не так(",
+        let alert = ErrorAlertModel(title: "Что-то пошло не так(",
                                message: "Не удалось войти в систему",
                                buttonText: "Ок")
-        let alertPresenter = AlertPresenter(controller: self)
+        let alertPresenter = ErrorAlertPresenter(controller: self)
         alertPresenter.showAlert(alert: alert) {[weak self] _ in
             self?.presentAuthViewController()
         }

@@ -145,6 +145,24 @@ final class ProfileViewController: UIViewController {
     }
 
     @objc private func logoutButtonTapped() {
+        let alertPresenter = ApproveAlertPresenter(controller: self)
+
+        let approveButtonText = "Да"
+        let cancelButtonText = "Нет"
+
+        let alertModel = ApproveAlertModel(title: "Пока, пока!",
+                                           message: "Уверены, что хотите выйти?",
+                                           ApproveButtonText: approveButtonText,
+                                           CancelButtonText: cancelButtonText)
+
+        alertPresenter.showAlert(alert: alertModel) { [weak self] action  in
+            if action.title == approveButtonText {
+                self?.logout()
+            }
+        }
+    }
+
+    private func logout() {
         OAuth2TokenStorage().token = nil
         OAuth2CookieStorage.clean()
 
@@ -154,9 +172,5 @@ final class ProfileViewController: UIViewController {
         }
         let splashViewController = SplashViewController()
         window.rootViewController = splashViewController
-    }
-
-    private func logout() {
-
     }
 }

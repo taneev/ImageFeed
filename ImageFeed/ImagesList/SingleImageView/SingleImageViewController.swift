@@ -90,15 +90,15 @@ extension SingleImageViewController {
     }
 
     private func showError() {
-        let alertPresenter = ImageSetAlertPresenter(controller: self)
+        let alertPresenter = ApproveAlertPresenter(controller: self)
 
         let alertTitle = "Что-то пошло не так."
         let alertMessage = "Попробовать ещё раз?"
         let retryActionTitle = "Повторить"
         let cancelActionTitle = "Не надо"
-        let alert = ImageSetAlertModel(title: alertTitle,
+        let alert = ApproveAlertModel(title: alertTitle,
                                        message: alertMessage,
-                                       RetryButtonText: retryActionTitle,
+                                       ApproveButtonText: retryActionTitle,
                                        CancelButtonText: cancelActionTitle)
 
         alertPresenter.showAlert(alert: alert) { [weak self] action in

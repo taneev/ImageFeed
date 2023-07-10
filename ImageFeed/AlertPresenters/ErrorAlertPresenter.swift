@@ -1,5 +1,5 @@
 //
-//  AlertPresenter.swift
+//  ErrorAlertPresenter.swift
 //  ImageFeed
 //
 //  Created by Тимур Танеев on 12.06.2023.
@@ -7,13 +7,13 @@
 
 import UIKit
 
-struct AlertModel {
+struct ErrorAlertModel {
     var title: String
     var message: String
     var buttonText: String
 }
 
-final class AlertPresenter {
+final class ErrorAlertPresenter {
 
     private weak var controller: UIViewController?
 
@@ -21,7 +21,7 @@ final class AlertPresenter {
         self.controller = controller
     }
 
-    func showAlert(alert: AlertModel, completion: ((UIAlertAction) -> Void)? = nil) {
+    func showAlert(alert: ErrorAlertModel, completion: ((UIAlertAction) -> Void)? = nil) {
         let alertController = UIAlertController(title: alert.title,
                                                 message: alert.message,
                                                 preferredStyle: .alert)
