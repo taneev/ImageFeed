@@ -11,7 +11,6 @@ import SwiftKeychainWrapper
 
 final class SplashViewController: UIViewController {
 
-    private let tokenKey = "UnsplashBearerToken"
     private let profileService = ProfileService.shared
     private lazy var splashLogoImageView: UIImageView = {createSplashLogoImageView()}()
 
@@ -32,8 +31,7 @@ final class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // TEST: KeychainWrapper.standard.removeAllKeys()
-        if let token = KeychainWrapper.standard.string(forKey: tokenKey) {
+        if let token = OAuth2TokenStorage().token {
             UIBlockingProgressHUD.show()
             profileFetch(token: token)
         }
@@ -76,17 +74,12 @@ final class SplashViewController: UIViewController {
         tabBarViewController.viewControllers = [imagesListViewController, profileViewController]
         window.rootViewController = tabBarViewController
     }
-
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewControllerDelegate(_ vc: AuthViewController, didGetToken token: String) {
         // сохраняем полученный токен
-        let isSuccess = KeychainWrapper.standard.set(token, forKey: tokenKey)
-        if !isSuccess {
-            assertionFailure("Bearer token not saved in keychain")
-            return
-        }
+        OAuth2TokenStorage().token = token
 
         profileFetch(token: token)
         dismiss(animated: true)
@@ -103,7 +96,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     private func alertAndSwitchToAuthViewController() {
         let alert = AlertModel(title: "Что-то пошло не так(",
                                message: "Не удалось войти в систему",
-                               buttonText: "Ок")
+                               cancelButtonText: "Ок")
         let alertPresenter = AlertPresenter(controller: self)
         alertPresenter.showAlert(alert: alert) {[weak self] _ in
             self?.presentAuthViewController()

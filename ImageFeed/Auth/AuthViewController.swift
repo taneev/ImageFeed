@@ -103,7 +103,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 UIBlockingProgressHUD.dismiss()
                 let alert = AlertModel(title: "Что-то пошло не так(",
                                        message: "Не удалось войти в систему",
-                                       buttonText: "Ок")
+                                       cancelButtonText: "Ок")
                 let alertPresenter = AlertPresenter(controller: self)
                 alertPresenter.showAlert(alert: alert)
             }
