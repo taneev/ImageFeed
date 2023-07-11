@@ -74,7 +74,6 @@ final class SplashViewController: UIViewController {
         tabBarViewController.viewControllers = [imagesListViewController, profileViewController]
         window.rootViewController = tabBarViewController
     }
-
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
@@ -95,10 +94,10 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
 
     private func alertAndSwitchToAuthViewController() {
-        let alert = ErrorAlertModel(title: "Что-то пошло не так(",
+        let alert = AlertModel(title: "Что-то пошло не так(",
                                message: "Не удалось войти в систему",
-                               buttonText: "Ок")
-        let alertPresenter = ErrorAlertPresenter(controller: self)
+                               cancelButtonText: "Ок")
+        let alertPresenter = AlertPresenter(controller: self)
         alertPresenter.showAlert(alert: alert) {[weak self] _ in
             self?.presentAuthViewController()
         }

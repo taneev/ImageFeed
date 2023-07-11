@@ -27,11 +27,16 @@ final class ImagesListCell: UITableViewCell {
         }
     }
 
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMMM yyyy"
+        return formatter
+    }()
+
     private var didSetupConstraints: Bool = false
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
     }
 
     override func prepareForReuse() {
@@ -67,15 +72,15 @@ final class ImagesListCell: UITableViewCell {
 }
 
 // MARK: верстка ячейки
-extension ImagesListCell {
-    private func createDateLabel() -> UILabel {
+private extension ImagesListCell {
+    func createDateLabel() -> UILabel {
         let dateLabel = UILabel()
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(dateLabel)
         return dateLabel
     }
 
-    private func createLikeButton() -> UIButton {
+    func createLikeButton() -> UIButton {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(button)
@@ -83,7 +88,7 @@ extension ImagesListCell {
         return button
     }
 
-    private func createImageView() -> UIImageView {
+    func createImageView() -> UIImageView {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 16
         imageView.layer.masksToBounds = true
@@ -101,5 +106,30 @@ extension ImagesListCell {
 
     func setIsLiked(to isLike: Bool) {
         self.isLiked = isLike
+    }
+
+    func config(thumbImageURL: String, createdAt: Date?, isLiked: Bool) {
+        backgroundColor = .ypBlack
+        cellImage.backgroundColor = .ypWhite
+        selectionStyle = .none
+
+        // Настройка alpha-канала на время отображения плейсхолдера (по дизайн-макету)
+        cellImage.alpha = 0.5
+
+        let placeholder = ImagePlaceholderView()
+        let thumbImageURL = thumbImageURL
+        guard let url = URL(string: thumbImageURL) else {
+            cellImage.addSubview(placeholder)
+            return
+        }
+
+        cellImage.kf.indicatorType = .activity
+        cellImage.kf.setImage(with: url, placeholder: placeholder) {[weak self] _ in
+            self?.cellImage.alpha = 1
+        }
+
+        imageDateLabel.text = createdAt == nil ? "" : dateFormatter.string(from: createdAt!)
+        setIsLiked(to: isLiked)
+        updateConstraintsIfNeeded()
     }
 }

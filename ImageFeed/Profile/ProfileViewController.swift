@@ -145,15 +145,15 @@ final class ProfileViewController: UIViewController {
     }
 
     @objc private func logoutButtonTapped() {
-        let alertPresenter = ApproveAlertPresenter(controller: self)
+        let alertPresenter = AlertPresenter(controller: self)
 
         let approveButtonText = "Да"
         let cancelButtonText = "Нет"
 
-        let alertModel = ApproveAlertModel(title: "Пока, пока!",
-                                           message: "Уверены, что хотите выйти?",
-                                           ApproveButtonText: approveButtonText,
-                                           CancelButtonText: cancelButtonText)
+        let alertModel = AlertModel(title: "Пока, пока!",
+                                    message: "Уверены, что хотите выйти?",
+                                    cancelButtonText: cancelButtonText,
+                                    approveButtonText: approveButtonText)
 
         alertPresenter.showAlert(alert: alertModel) { [weak self] action  in
             if action.title == approveButtonText {

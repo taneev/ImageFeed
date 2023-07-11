@@ -21,7 +21,6 @@ final class SingleImageViewController: UIViewController {
     private lazy var backButton: UIButton = { setupBackButton() }()
     private lazy var shareButton: UIButton = { setupShareButton() }()
 
-
     override func loadView() {
         super.loadView()
 
@@ -90,16 +89,16 @@ extension SingleImageViewController {
     }
 
     private func showError() {
-        let alertPresenter = ApproveAlertPresenter(controller: self)
+        let alertPresenter = AlertPresenter(controller: self)
 
         let alertTitle = "Что-то пошло не так."
         let alertMessage = "Попробовать ещё раз?"
         let retryActionTitle = "Повторить"
         let cancelActionTitle = "Не надо"
-        let alert = ApproveAlertModel(title: alertTitle,
-                                       message: alertMessage,
-                                       ApproveButtonText: retryActionTitle,
-                                       CancelButtonText: cancelActionTitle)
+        let alert = AlertModel(title: alertTitle,
+                               message: alertMessage,
+                               cancelButtonText: cancelActionTitle,
+                               approveButtonText: retryActionTitle)
 
         alertPresenter.showAlert(alert: alert) { [weak self] action in
             if action.title == retryActionTitle {
@@ -182,7 +181,6 @@ extension SingleImageViewController {
         )
     }
 }
-
 
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

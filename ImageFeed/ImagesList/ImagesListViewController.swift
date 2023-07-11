@@ -12,72 +12,31 @@ final class ImagesListViewController: UIViewController {
 
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
     private lazy var tableView: UITableView = { createTableView() }()
-
     private let imageListService = ImagesListService.shared
-
     private let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
-
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMMM yyyy"
-        return formatter
-    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(tableView)
-        addConstraints()
-
-        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = .ypBlack
+        setupTableView()
 
         NotificationCenter.default.addObserver(
             forName: ImagesListService.DidChangeNotification,
             object: nil,
-            queue: .main) {[weak self] notification in
+            queue: .main) {[weak self] _ in
                 self?.updateTableViewAnimated()
             }
+
         if imageListService.photos.isEmpty {
             imageListService.fetchPhotosNextPage()
         }
     }
 }
 
-extension ImagesListViewController {
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath)
-    {
-        cell.backgroundColor = .ypBlack
-        cell.cellImage.backgroundColor = .ypWhite
-        // Настройка alpha-канала на время отображения плейсхолдера (по дизайн-макету)
-        cell.cellImage.alpha = 0.5
+// MARK: - логика таблицы
+private extension ImagesListViewController {
 
-        let placeholder = ImagePlaceholderView()
-        let thumbImageURL = imageListService.photos[indexPath.row].thumbImageURL
-        guard let url = URL(string: thumbImageURL) else {
-            cell.cellImage.addSubview(placeholder)
-            return
-        }
-
-        cell.cellImage.kf.indicatorType = .activity
-        cell.cellImage.kf.setImage(with: url,
-                                   placeholder: placeholder) { _ in
-            cell.cellImage.alpha = 1
-        }
-
-        if let imageDate = imageListService.photos[indexPath.row].createdAt {
-            let imageDateString = dateFormatter.string(from: imageDate)
-            cell.imageDateLabel.text = imageDateString
-        }
-        else {
-            cell.imageDateLabel.text = ""
-        }
-        cell.setIsLiked(to: imageListService.photos[indexPath.row].isLiked)
-        cell.updateConstraintsIfNeeded()
-    }
-
-    private func updateTableViewAnimated() {
+    func updateTableViewAnimated() {
         tableView.performBatchUpdates { [weak self] in
             guard let self else {return}
 
@@ -87,18 +46,18 @@ extension ImagesListViewController {
         }
     }
 
-    private func showError() {
-        let alertPresenter = ErrorAlertPresenter(controller: self)
-        let alert = ErrorAlertModel(title: "Что-то пошло не так (",
+    func showError() {
+        let alertPresenter = AlertPresenter(controller: self)
+        let alert = AlertModel(title: "Что-то пошло не так (",
                                message: "Не удалось изменить лайк",
-                               buttonText: "Ok")
+                               cancelButtonText: "Ok")
         alertPresenter.showAlert(alert: alert)
     }
 }
 
 // MARK: - верстка
-extension ImagesListViewController {
-    private func createTableView() -> UITableView {
+private extension ImagesListViewController {
+    func createTableView() -> UITableView {
         let tableView = UITableView()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         tableView.dataSource = self
@@ -107,7 +66,16 @@ extension ImagesListViewController {
         return tableView
     }
 
-    private func addConstraints() {
+    func setupTableView() {
+        view.addSubview(tableView)
+        addConstraints()
+
+        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.backgroundColor = .ypBlack
+    }
+
+    func addConstraints() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate(
             [
@@ -161,7 +129,9 @@ extension ImagesListViewController: UITableViewDataSource {
         }
 
         imageListCell.delegate = self
-        configCell(for: imageListCell, with: indexPath)
+        imageListCell.config(thumbImageURL: imageListService.photos[indexPath.row].thumbImageURL,
+                             createdAt: imageListService.photos[indexPath.row].createdAt,
+                             isLiked: imageListService.photos[indexPath.row].isLiked)
         return imageListCell
     }
 

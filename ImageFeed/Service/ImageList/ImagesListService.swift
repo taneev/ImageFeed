@@ -14,7 +14,6 @@ final class ImagesListService {
     static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
 
     private(set) var photos: [Photo] = []
-    private let tokenKey = "UnsplashBearerToken"
 
     private let networkClient = NetworkClient()
     private let imageListURLPath = "/photos"
@@ -56,7 +55,7 @@ final class ImagesListService {
                     NotificationCenter.default
                         .post(
                             name: ImagesListService.DidChangeNotification,
-                            object: self.photos.count)
+                            object: nil)
                 }
             case .failure:
                 DispatchQueue.main.async {[weak self] in
@@ -108,5 +107,4 @@ extension ImagesListService {
 
         self.photos[index].setIsLiked(to: isLiked)
     }
-    
 }

@@ -8,9 +8,9 @@
 import UIKit
 import Kingfisher
 
-final class ImagePlaceholderView: UIView {
+final class ImagePlaceholderView: UIView, Placeholder {
 
-    let placeholderImageName = "Stub"
+    private let placeholderImageName = "Stub"
     private lazy var imageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .ypPlaceholderBack
@@ -23,14 +23,25 @@ final class ImagePlaceholderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        setupConstraints()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
+        setupConstraints()
+    }
+}
+
+private extension ImagePlaceholderView {
+    func setupView() {
+        backgroundColor = .ypBlack
+        layer.cornerRadius = 16
+        layer.masksToBounds = true
+        addSubview(imageView)
     }
 
-    override func layoutSubviews() {
+    func setupConstraints() {
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -39,14 +50,3 @@ final class ImagePlaceholderView: UIView {
         ])
     }
 }
-
-extension ImagePlaceholderView {
-    private func setupView() {
-        backgroundColor = .ypBlack
-        layer.cornerRadius = 16
-        layer.masksToBounds = true
-        addSubview(imageView)
-    }
-}
-
-extension ImagePlaceholderView: Placeholder {}
