@@ -39,9 +39,11 @@ extension AuthViewController {
 
     @objc private func authButtonDidTapped() {
         let webViewController = WebViewViewController()
-        let webViewPresenter = WebViewPresenter()
 
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
         webViewPresenter.viewController = webViewController
+
         webViewController.presenter = webViewPresenter
         webViewController.delegate = self
 
