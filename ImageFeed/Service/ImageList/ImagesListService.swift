@@ -61,7 +61,6 @@ final class ImagesListService {
                 DispatchQueue.main.async {[weak self] in
                     self?.currentTask = nil
                 }
-                assertionFailure("Ошибка получения списка фото")
             }
         }
         task.resume()

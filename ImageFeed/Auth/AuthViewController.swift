@@ -39,7 +39,12 @@ extension AuthViewController {
 
     @objc private func authButtonDidTapped() {
         let webViewController = WebViewViewController()
+        let webViewPresenter = WebViewPresenter()
+
+        webViewPresenter.viewController = webViewController
+        webViewController.presenter = webViewPresenter
         webViewController.delegate = self
+
         navigationController?.navigationBar.isHidden = true
         navigationController?.pushViewController(webViewController, animated: true)
     }
