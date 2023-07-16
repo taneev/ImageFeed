@@ -62,6 +62,7 @@ extension AuthViewController {
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
 
+        button.accessibilityIdentifier = "Authenticate"
         return button
     }
 

@@ -103,7 +103,7 @@ private extension WebViewViewController {
     func setupWebView() -> WKWebView {
         let webView = WKWebView()
         webView.navigationDelegate = self
-
+        webView.accessibilityIdentifier = "UnsplashWebView"
         return webView
     }
 
