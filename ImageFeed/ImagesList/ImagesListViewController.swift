@@ -10,7 +10,6 @@ import Kingfisher
 
 final class ImagesListViewController: UIViewController {
 
-    private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
     private lazy var tableView: UITableView = { createTableView() }()
     private let imageListService = ImagesListService.shared
     private let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
