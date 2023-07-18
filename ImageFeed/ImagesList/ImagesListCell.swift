@@ -24,6 +24,7 @@ final class ImagesListCell: UITableViewCell {
         didSet {
             let likeButtonImage = isLiked ? isLikedImage : isUnlikedImage
             likeButton.setImage(likeButtonImage, for: .normal)
+            likeButton.accessibilityIdentifier = "likeButton"
         }
     }
 
