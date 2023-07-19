@@ -68,6 +68,7 @@ class ImageFeedUITests: XCTestCase {
         // еще раз нажатие той же кнопки
         likeButton.tap()
 
+        sleep(2)
         cellToLike.tap()
         let image = app.scrollViews.images.element(boundBy: 0)
         // на низких скоростях соединения читается очень долго.
