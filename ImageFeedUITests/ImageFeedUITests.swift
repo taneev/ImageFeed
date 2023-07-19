@@ -51,21 +51,26 @@ class ImageFeedUITests: XCTestCase {
     }
 
     func testFeed() throws {
-        // Данный вариант теста работает при условии невысокой скорости соединения
-        // Тест успешно проходит на скорости до 256 kbps (в обе стороны)
+
         let tableView = app.tables["imageListTableView"]
+
+        tableView.swipeUp()
+
+        let cellToLike = tableView.cells.element(boundBy: 0)
+        XCTAssertTrue(cellToLike.waitForExistence(timeout: 5))
+
+        let likeButton = cellToLike.buttons["likeButton"]
+        XCTAssertTrue(likeButton.waitForExistence(timeout: 5))
+
         // лайк
-        tableView.cells.element(boundBy: 0).buttons["likeButton"].tap()
-
+        likeButton.tap()
+        sleep(2)
         // еще раз нажатие той же кнопки
-        tableView.cells.element(boundBy: 0).buttons["likeButton"].tap()
+        likeButton.tap()
 
-        // работа с изображением
-        let cellToZoom = tableView.cells.element(boundBy: 0)
-        cellToZoom.tap()
-
+        cellToLike.tap()
         let image = app.scrollViews.images.element(boundBy: 0)
-        // на рабочей для теста скорости картинка читается очень долго.
+        // на низких скоростях соединения читается очень долго.
         // Для больших размеров - более минуты
         XCTAssertTrue(image.waitForExistence(timeout: 120))
 
@@ -78,10 +83,7 @@ class ImageFeedUITests: XCTestCase {
         XCTAssertTrue(navBackButtonWhiteButton.waitForExistence(timeout: 5))
 
         navBackButtonWhiteButton.tap()
-        XCTAssertTrue(cellToZoom.waitForExistence(timeout: 5))
-
-        // скроллинг ленты
-        cellToZoom.swipeUp()
+        XCTAssertTrue(cellToLike.waitForExistence(timeout: 5))
     }
 
     func testProfile() throws {

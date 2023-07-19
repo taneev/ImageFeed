@@ -113,6 +113,15 @@ extension ImagesListViewController: UITableViewDelegate {
 
         return cellHeight
     }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let visibleRows = tableView.indexPathsForVisibleRows,
+           visibleRows.contains(indexPath) {
+            if indexPath.row + 1 == imageListService.photos.count {
+                imageListService.fetchPhotosNextPage()
+            }
+        }
+    }
 }
 
 // MARK: UITableViewDataSource
@@ -133,12 +142,6 @@ extension ImagesListViewController: UITableViewDataSource {
                              createdAt: imageListService.photos[indexPath.row].createdAt,
                              isLiked: imageListService.photos[indexPath.row].isLiked)
         return imageListCell
-    }
-
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row + 1 == imageListService.photos.count {
-            imageListService.fetchPhotosNextPage()
-        }
     }
 }
 
