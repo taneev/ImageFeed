@@ -98,3 +98,37 @@ final class WebViewTests: XCTestCase {
         XCTAssertEqual(code, testAuthCode)
     }
 }
+
+final class ProfileTests: XCTestCase {
+    func testViewControllerCallsViewDidLoad() {
+        //given
+        let profileViewController = ProfileViewController()
+        let presenter = ProfilePresenterSpy(viewController: profileViewController,
+                                            profileDataSource: ProfileDataSourceDummy())
+
+        profileViewController.presenter = presenter
+
+        //when
+        _ = profileViewController.view
+
+        //then
+        XCTAssertTrue(presenter.viewDidLoadCalled) //behaviour verification
+    }
+
+    func testPresentersCallsUpdateAvatar() {
+        //given
+        let profileViewController = ProfileViewControllerSpy()
+        let presenter = ProfilePresenter(viewController: profileViewController,
+                                         profileDataSource: ProfileDataSourceDummy())
+
+        profileViewController.presenter = presenter
+
+        //when
+        presenter.viewDidLoad()
+
+        //then
+        XCTAssertTrue(profileViewController.updateAvatarCalled)
+        XCTAssertTrue(profileViewController.updateProfileDetailsCalled) 
+    }
+
+}

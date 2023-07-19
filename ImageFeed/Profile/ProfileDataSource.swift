@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ProfileDataSourceProtocol: AnyObject {
+public protocol ProfileDataSourceProtocol: AnyObject {
     var avatarURL: String? { get }
     var profile: Profile? { get }
     var didChangeNotification: Notification.Name { get }

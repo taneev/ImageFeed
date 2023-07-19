@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol ProfilePresenterProtocol {
+public protocol ProfilePresenterProtocol {
     var viewController: ProfileViewControllerProtocol? { get set }
     var profileDataSource: ProfileDataSourceProtocol { get set }
 
