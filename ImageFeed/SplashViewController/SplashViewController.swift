@@ -68,7 +68,8 @@ final class SplashViewController: UIViewController {
             selectedImage: nil)
 
         let profileViewController = ProfileViewController()
-        profileViewController.presenter = ProfilePresenter(viewController: profileViewController)
+        profileViewController.presenter = ProfilePresenter(viewController: profileViewController,
+                                                           profileDataSource: ProfileDataSource())
         profileViewController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(named: "tab_profile_active"),

@@ -8,20 +8,21 @@
 import UIKit
 
 protocol ProfilePresenterProtocol {
-    var  viewController: ProfileViewControllerProtocol? { get set }
+    var viewController: ProfileViewControllerProtocol? { get set }
+    var profileDataSource: ProfileDataSourceProtocol { get set }
+
     func viewDidLoad()
     func logout()
 }
 
 final class ProfilePresenter: ProfilePresenterProtocol {
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
+    var profileDataSource: ProfileDataSourceProtocol
+    weak var viewController: ProfileViewControllerProtocol?
     private var profileImageServiceObserver: NSObjectProtocol?
 
-    weak var viewController: ProfileViewControllerProtocol?
-
-    init(viewController: ProfileViewControllerProtocol?) {
+    init(viewController: ProfileViewControllerProtocol?, profileDataSource: ProfileDataSourceProtocol) {
         self.viewController = viewController
+        self.profileDataSource = profileDataSource
     }
 
     func logout() {
@@ -37,21 +38,21 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func viewDidLoad() {
-        if let avatarURL = profileImageService.avatarURL {
+        if let avatarURL = profileDataSource.avatarURL {
             viewController?.updateAvatar(from: URL(string: avatarURL))
         }
 
         profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.DidChangeNotification,
+            forName: profileDataSource.didChangeNotification,
             object: nil,
             queue: .main)
         {   [weak self] _ in
             guard let self,
-                let avatarURL = profileImageService.avatarURL else { return }
+                let avatarURL = profileDataSource.avatarURL else { return }
             self.viewController?.updateAvatar(from: URL(string: avatarURL))
         }
 
-        guard let profile = profileService.profile else {return}
+        guard let profile = profileDataSource.profile else {return}
         viewController?.updateProfileDetails(profile: profile)
     }
 }
