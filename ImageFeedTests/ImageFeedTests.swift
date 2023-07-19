@@ -130,5 +130,34 @@ final class ProfileTests: XCTestCase {
         XCTAssertTrue(profileViewController.updateAvatarCalled)
         XCTAssertTrue(profileViewController.updateProfileDetailsCalled) 
     }
+}
 
+final class ImagesListTests: XCTestCase {
+    func testViewControllerCallsViewDidLoad() {
+        //given
+        let imagesListViewController = ImagesListViewController()
+        let presenter = ImagesListPresenterSpy()
+
+        imagesListViewController.presenter = presenter
+
+        //when
+        _ = imagesListViewController.view
+
+        //then
+        XCTAssertTrue(presenter.viewDidLoadDidCall) //behaviour verification
+    }
+
+    func testPresenterCallsFetchPhotos() {
+        //given
+        let viewControllerSpy = ImagesListViewController()
+        let imageListDataSourceStub = ImageListDataSourceStub()
+        let presenter = ImagesListPresenter(viewController: viewControllerSpy,
+                                            dataSource: imageListDataSourceStub)
+
+        //when
+        presenter.viewDidLoad()
+
+        //then
+        XCTAssertTrue(imageListDataSourceStub.fetchPhotosDidCall) //behaviour verification
+    }
 }

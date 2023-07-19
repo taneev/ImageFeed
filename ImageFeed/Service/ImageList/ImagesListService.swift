@@ -11,7 +11,7 @@ import SwiftKeychainWrapper
 final class ImagesListService: ImagesListDataSourceProtocol {
 
     static var shared = ImagesListService()
-    var DidChangeNotification: Notification.Name {
+    var didChangeNotification: Notification.Name {
         get { Notification.Name(rawValue: "ImagesListServiceDidChange") }
     }
 
@@ -65,7 +65,7 @@ final class ImagesListService: ImagesListDataSourceProtocol {
 
                     NotificationCenter.default
                         .post(
-                            name: self.DidChangeNotification,
+                            name: self.didChangeNotification,
                             object: nil)
                 }
             case .failure:

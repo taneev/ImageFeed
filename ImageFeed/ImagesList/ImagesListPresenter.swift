@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ImagesListPresenterProtocol: AnyObject {
+public protocol ImagesListPresenterProtocol {
     var numberOfPhotos: Int { get }
     var viewController: ImagesListViewControllerProtocol! {get set}
 
@@ -38,7 +38,7 @@ final class ImagesListPresenter {
 extension ImagesListPresenter: ImagesListPresenterProtocol {
     func viewDidLoad() {
         NotificationCenter.default.addObserver(
-            forName: imageListDataSource.DidChangeNotification,
+            forName: imageListDataSource.didChangeNotification,
             object: nil,
             queue: .main) {[weak self] _ in
                 self?.dataSourceDidChange()
