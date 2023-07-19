@@ -8,16 +8,18 @@
 import UIKit
 import Kingfisher
 
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfilePresenterProtocol! { get set }
+    func updateAvatar(from url: URL?)
+    func updateProfileDetails(profile: Profile)
+}
+
 final class ProfileViewController: UIViewController {
 
     var presenter: ProfilePresenterProtocol!
-
     private let leftMargin: CGFloat = 16
     private let rightMargin: CGFloat = 16
     private let avatarCornerRadius: CGFloat = 35
-
-    private let profileService = ProfileService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?
 
     private lazy var profileImageView: UIImageView = { createProfileImageView() }()
     private lazy var logoutButton: UIButton = { createLogoutButton() }()
@@ -29,27 +31,34 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .ypBlack
         addSubviewsAndConstraints()
-        updateAvatar()
-
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.DidChangeNotification,
-            object: nil,
-            queue: .main)
-        {   [weak self] _ in
-            guard let self = self else { return }
-            self.updateAvatar()
-        }
-
-        guard let profile = profileService.profile else {return}
-        updateProfileDetails(profile: profile)
+        presenter.viewDidLoad()
     }
 
-    private func updateAvatar() {
-        guard let profileImageURL = ProfileImageService.shared.avatarURL,
-              let url = URL(string: profileImageURL)
-        else { return }
+    @objc private func logoutButtonTapped() {
+        let alertPresenter = AlertPresenter(controller: self)
+
+        let approveButtonText = "Да"
+        let cancelButtonText = "Нет"
+
+        let alertModel = AlertModel(title: "Пока, пока!",
+                                    message: "Уверены, что хотите выйти?",
+                                    cancelButtonText: cancelButtonText,
+                                    approveButtonText: approveButtonText)
+
+        alertPresenter.showAlert(alert: alertModel) { [weak self] action  in
+            if action.title == approveButtonText {
+                self?.presenter.logout()
+            }
+        }
+    }
+}
+
+// MARK: ProfileViewControllerProtocol
+extension ProfileViewController: ProfileViewControllerProtocol {
+
+    func updateAvatar(from url: URL?) {
+        guard let url else { return }
 
         let placeholder = UIImage(systemName: "person.crop.circle.fill")
         let processor = RoundCornerImageProcessor(cornerRadius: avatarCornerRadius)
@@ -58,13 +67,17 @@ final class ProfileViewController: UIViewController {
                                      options: [.processor(processor), .forceRefresh])
     }
 
-    private func updateProfileDetails(profile: Profile) {
+    func updateProfileDetails(profile: Profile) {
         self.usernameLabel.text = profile.name
         self.emailLabel.text = profile.loginName
         self.bioLabel.text = profile.bio
     }
+}
 
+// MARK: верстка
+extension ProfileViewController {
     private func addSubviewsAndConstraints() {
+        view.backgroundColor = .ypBlack
         view.addSubview(profileImageView)
         view.addSubview(logoutButton)
         view.addSubview(usernameLabel)
@@ -145,23 +158,5 @@ final class ProfileViewController: UIViewController {
             bioLabel.topAnchor.constraint(equalTo:  emailLabel.bottomAnchor, constant: 8),
             bioLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -rightMargin)
         ])
-    }
-
-    @objc private func logoutButtonTapped() {
-        let alertPresenter = AlertPresenter(controller: self)
-
-        let approveButtonText = "Да"
-        let cancelButtonText = "Нет"
-
-        let alertModel = AlertModel(title: "Пока, пока!",
-                                    message: "Уверены, что хотите выйти?",
-                                    cancelButtonText: cancelButtonText,
-                                    approveButtonText: approveButtonText)
-
-        alertPresenter.showAlert(alert: alertModel) { [weak self] action  in
-            if action.title == approveButtonText {
-                self?.presenter.logout()
-            }
-        }
     }
 }
