@@ -10,6 +10,8 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
 
+    var presenter: ProfilePresenterProtocol!
+
     private let leftMargin: CGFloat = 16
     private let rightMargin: CGFloat = 16
     private let avatarCornerRadius: CGFloat = 35
@@ -158,20 +160,8 @@ final class ProfileViewController: UIViewController {
 
         alertPresenter.showAlert(alert: alertModel) { [weak self] action  in
             if action.title == approveButtonText {
-                self?.logout()
+                self?.presenter.logout()
             }
         }
-    }
-
-    private func logout() {
-        OAuth2TokenStorage().token = nil
-        OAuth2CookieStorage.clean()
-
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
-        }
-        let splashViewController = SplashViewController()
-        window.rootViewController = splashViewController
     }
 }

@@ -60,16 +60,15 @@ final class SplashViewController: UIViewController {
         tabBarViewController.tabBar.tintColor = .ypWhite
 
         let imagesListViewController = ImagesListViewController()
-        let imagesListPresenter = ImagesListPresenter()
-        imagesListPresenter.viewController = imagesListViewController
-        imagesListPresenter.imageListDataSource = ImagesListService.shared
-        imagesListViewController.presenter = imagesListPresenter
+        imagesListViewController.presenter = ImagesListPresenter(viewController: imagesListViewController,
+                                                                 dataSource: ImagesListService.shared)
         imagesListViewController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(systemName: "rectangle.stack.fill"),
             selectedImage: nil)
 
         let profileViewController = ProfileViewController()
+        profileViewController.presenter = ProfilePresenter()
         profileViewController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(named: "tab_profile_active"),

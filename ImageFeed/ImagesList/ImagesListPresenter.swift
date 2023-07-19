@@ -24,6 +24,11 @@ final class ImagesListPresenter {
     weak var viewController: ImagesListViewControllerProtocol!
     var imageListDataSource: ImagesListDataSourceProtocol!
 
+    init(viewController: ImagesListViewController, dataSource: ImagesListDataSourceProtocol) {
+        self.viewController = viewController
+        self.imageListDataSource = dataSource
+    }
+
     private func dataSourceDidChange() {
         viewController.updateTableViewAnimated()
     }
