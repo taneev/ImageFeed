@@ -52,7 +52,7 @@ extension WebViewViewController: WebViewViewControllerProtocol {
     }
 
     func setProgressValue(_ newValue: Float) {
-        progressView.progress = newValue
+        progressView.setProgress(newValue, animated: true)
     }
 
     func setProgressHidden(_ isHidden: Bool) {
