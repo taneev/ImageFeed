@@ -7,12 +7,14 @@
 
 import Foundation
 
-let AccessKey = "GG_YMI5y_w-l-2rHSH9Kybym7uWVm8cxZfFjOA3ktF0"
-let SecretKey = "yM_ey82X7CvKNiQ8nMaH98EGY0VmJmr4ahoU87Xq1_8"
-let RedirectURI = "urn:ietf:wg:oauth:2.0:oob"
-let AccessScope = "public+read_user+write_likes"
-let DefaultBaseURL:URL = URL(string: "https://api.unsplash.com")!
-let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+private enum AuthConstants {
+    static let accessKey = "GG_YMI5y_w-l-2rHSH9Kybym7uWVm8cxZfFjOA3ktF0"
+    static let secretKey = "yM_ey82X7CvKNiQ8nMaH98EGY0VmJmr4ahoU87Xq1_8"
+    static let redirectURI = "urn:ietf:wg:oauth:2.0:oob"
+    static let accessScope = "public+read_user+write_likes"
+    static let defaultBaseURL:URL = URL(string: "https://api.unsplash.com")!
+    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+}
 
 struct AuthConfiguration {
     let accessKey: String
@@ -23,12 +25,12 @@ struct AuthConfiguration {
     let authURLString: String
 
     static var standard: AuthConfiguration {
-            return AuthConfiguration(accessKey: AccessKey,
-                                     secretKey: SecretKey,
-                                     redirectURI: RedirectURI,
-                                     accessScope: AccessScope,
-                                     authURLString: UnsplashAuthorizeURLString,
-                                     defaultBaseURL: DefaultBaseURL)
+        return AuthConfiguration(accessKey: AuthConstants.accessKey,
+                                 secretKey: AuthConstants.secretKey,
+                                 redirectURI: AuthConstants.redirectURI,
+                                 accessScope: AuthConstants.accessScope,
+                                 authURLString: AuthConstants.unsplashAuthorizeURLString,
+                                 defaultBaseURL: AuthConstants.defaultBaseURL)
     }
 
     init(accessKey: String, secretKey: String, redirectURI: String, accessScope: String, authURLString: String, defaultBaseURL: URL) {

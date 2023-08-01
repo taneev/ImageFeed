@@ -10,6 +10,7 @@ import Foundation
 final class NetworkClient {
 
     private let urlSession = URLSession.shared
+    private let authHelper = AuthHelper()
 
     private func getData(for request: URLRequest,
                          completion: @escaping (Result<Data, Error>) -> Void ) -> URLSessionTask {
@@ -61,10 +62,10 @@ final class NetworkClient {
     func makeRequest(_ token: String,
                      path: String,
                      httpMethod: String,
-                     relativeTo baseUrl: URL = DefaultBaseURL,
+                     relativeTo baseUrl: URL? = nil,
                      requestParams: [String: String]? = nil) -> URLRequest {
-
-        var urlComponents = URLComponents(string: baseUrl.absoluteString)!
+        let defaultBaseURLString = authHelper.defaultBaseURL().absoluteString
+        var urlComponents = URLComponents(string: baseUrl?.absoluteString ?? defaultBaseURLString)!
         urlComponents.path = path
         if let queryItems = requestParams?.map({URLQueryItem(name: $0.key, value: $0.value)}) {
             urlComponents.queryItems = queryItems
@@ -77,7 +78,10 @@ final class NetworkClient {
         return request
     }
 
-    func makeGetRequest(_ token: String, path: String, relativeTo baseUrl: URL = DefaultBaseURL, requestParams: [String: String]? = nil) -> URLRequest {
+    func makeGetRequest(_ token: String,
+                        path: String,
+                        relativeTo baseUrl: URL? = nil,
+                        requestParams: [String: String]? = nil) -> URLRequest {
 
         let request = makeRequest(token,
                                   path: path,

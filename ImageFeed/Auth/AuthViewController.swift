@@ -13,7 +13,8 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
 
-    private let authService = OAuth2Service()
+    private let authHelper = AuthHelper()
+    private lazy var authService = { OAuth2Service(authHelper: authHelper) }()
 
     private lazy var authButton: UIButton = {setupAuthButton()}()
     private lazy var unsplashLogo: UIView = {setupUnsplashLogo()}()
@@ -34,7 +35,6 @@ private extension AuthViewController {
     @objc func authButtonDidTapped() {
         let webViewController = WebViewViewController()
 
-        let authHelper = AuthHelper()
         let webViewPresenter = WebViewPresenter(authHelper: authHelper)
         webViewPresenter.viewController = webViewController
 

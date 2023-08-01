@@ -35,6 +35,26 @@ final class AuthHelper: AuthHelperProtocol {
         return urlComponents.url!
     }
 
+    private func tokenRequestURL(withCode code: String, urlString: String) -> URL {
+        var urlComponents = URLComponents(string: urlString)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: configuration.accessKey),
+            URLQueryItem(name: "client_secret", value: configuration.secretKey),
+            URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
+            URLQueryItem(name: "code", value: code),
+            URLQueryItem(name: "grant_type", value: "authorization_code")
+        ]
+        return urlComponents.url!
+    }
+
+    func makeAuthTokenRequest(withCode code: String, urlString: String) -> URLRequest {
+
+        let url = tokenRequestURL(withCode: code, urlString: urlString)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        return request
+    }
+
     func code(from url: URL) -> String? {
         if  let urlComponents = URLComponents(string: url.absoluteString),
             urlComponents.path == "/oauth/authorize/native",
@@ -44,5 +64,9 @@ final class AuthHelper: AuthHelperProtocol {
             return codeItem.value
         }
         return nil
+    }
+
+    func defaultBaseURL() -> URL {
+        return configuration.defaultBaseURL
     }
 }
