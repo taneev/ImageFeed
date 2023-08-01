@@ -13,18 +13,16 @@ final class OAuth2Service {
     private let networkClient = NetworkClient()
     private var task: URLSessionTask?
     private var lastCode: String?
+    private var authHelper: AuthHelper
+
+    init(task: URLSessionTask? = nil, lastCode: String? = nil, authHelper: AuthHelper) {
+        self.task = task
+        self.lastCode = lastCode
+        self.authHelper = authHelper
+    }
 
     private func makeAuthRequest(code: String) -> URLRequest {
-        var urlComponents = URLComponents(string: tokenRequestURLString)!
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AccessKey),
-            URLQueryItem(name: "client_secret", value: SecretKey),
-            URLQueryItem(name: "redirect_uri", value: RedirectURI),
-            URLQueryItem(name: "code", value: code),
-            URLQueryItem(name: "grant_type", value: "authorization_code")
-        ]
-
-        var request = URLRequest(url: urlComponents.url!)
+        var request = authHelper.makeAuthTokenRequest(withCode: code, urlString: tokenRequestURLString)
         request.httpMethod = "POST"
 
         return request

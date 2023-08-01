@@ -8,12 +8,14 @@
 import Foundation
 import SwiftKeychainWrapper
 
-final class ImagesListService {
+final class ImagesListService: ImagesListDataSourceProtocol {
 
     static var shared = ImagesListService()
-    static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
+    var didChangeNotification: Notification.Name {
+        get { Notification.Name(rawValue: "ImagesListServiceDidChange") }
+    }
 
-    private(set) var photos: [Photo] = []
+    private var photos: [Photo] = []
 
     private let networkClient = NetworkClient()
     private let imageListURLPath = "/photos"
@@ -22,6 +24,15 @@ final class ImagesListService {
     private var currentTask: URLSessionTask?
 
     private var lastLoadedPage: Int?
+
+    var numberOfPhotos: Int {
+        get {photos.count}
+    }
+
+    func photo(at index: Int) -> Photo? {
+        guard (0 ..< photos.count).contains(index) else {return nil}
+        return photos[index]
+    }
 
     func fetchPhotosNextPage() {
         guard let token = OAuth2TokenStorage().token else {
@@ -54,14 +65,13 @@ final class ImagesListService {
 
                     NotificationCenter.default
                         .post(
-                            name: ImagesListService.DidChangeNotification,
+                            name: self.didChangeNotification,
                             object: nil)
                 }
             case .failure:
                 DispatchQueue.main.async {[weak self] in
                     self?.currentTask = nil
                 }
-                assertionFailure("Ошибка получения списка фото")
             }
         }
         task.resume()
@@ -98,7 +108,7 @@ final class ImagesListService {
     }
 }
 
-extension ImagesListService {
+private extension ImagesListService {
 
     func setIsLiked(for photoId: String, to isLiked: Bool) {
         guard let index = self.photos.firstIndex(where: {$0.id == photoId}),

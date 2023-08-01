@@ -132,6 +132,7 @@ extension SingleImageViewController {
 
         backButton.setImage(UIImage(named: "chevron.backward"), for: .normal)
         backButton.tintColor = .ypWhite
+        backButton.accessibilityIdentifier = "nav back button white"
 
         backButton.addTarget(self, action: #selector(didTapBackButton(_:)), for: .touchUpInside)
 

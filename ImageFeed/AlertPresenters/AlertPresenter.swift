@@ -32,7 +32,7 @@ final class AlertPresenter {
         let alertController = UIAlertController(title: alert.title,
                                                 message: alert.message,
                                                 preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: alert.cancelButtonText, style: .cancel)
+        let cancelAction = UIAlertAction(title: alert.cancelButtonText, style: .cancel, handler: completion)
         alertController.addAction(cancelAction)
 
         if let approveButtonText = alert.approveButtonText {

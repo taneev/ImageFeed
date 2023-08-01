@@ -8,69 +8,68 @@
 import UIKit
 import WebKit
 
-protocol WebViewViewControllerDelegate: AnyObject {
-    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController)
+public protocol WebViewViewControllerProtocol: AnyObject {
+    var presenter: WebViewPresenterProtocol? { get set }
+    func load(request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
 }
 
 final class WebViewViewController: UIViewController {
 
+    var presenter: WebViewPresenterProtocol?
     private lazy var webView: WKWebView = {setupWebView()}()
     private lazy var backButton: UIButton = {setupButton()}()
     private lazy var progressView: UIProgressView = {setupProgressView()}()
 
     private var estimatedProgressObservation: NSKeyValueObservation?
 
-    weak var delegate: WebViewViewControllerDelegate?
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(webView)
-        view.addSubview(backButton)
-        view.addSubview(progressView)
-
-        setupConstraints()
+        setupViews()
 
         estimatedProgressObservation = webView.observe(
             \.estimatedProgress,
              options: [],
-             changeHandler: { [weak self] _, _ in
+             changeHandler: { [weak self] webView, change in
                  guard let self = self else { return }
-                 self.updateProgress()
+                 self.presenter?.didUpdateProgressValue(change.newValue ?? webView.estimatedProgress)
              })
 
-        loadWebViewContent()
-        updateProgress()
+        presenter?.viewDidLoad()
     }
 
     @objc private func didTapBackButton(_ sender: Any) {
-        delegate?.webViewViewControllerDidCancel(self)
+        presenter?.didTapBackButton()
     }
 }
 
-extension WebViewViewController {
-
-    private func loadWebViewContent() {
-        var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AccessKey),
-            URLQueryItem(name: "redirect_uri", value: RedirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: AccessScope)
-        ]
-        let url = urlComponents.url!
-
-        let request = URLRequest(url: url)
+// MARK: управление ViewController'ом из Presenter'а
+extension WebViewViewController: WebViewViewControllerProtocol {
+    func load(request: URLRequest) {
         webView.load(request)
     }
 
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    func setProgressValue(_ newValue: Float) {
+        progressView.setProgress(newValue, animated: true)
     }
 
-    private func setupConstraints() {
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
+    }
+}
+
+// MARK: Инициализация UI и верстка
+private extension WebViewViewController {
+    func setupViews() {
+        view.addSubview(webView)
+        view.addSubview(backButton)
+        view.addSubview(progressView)
+        setupConstraints()
+    }
+
+    func setupConstraints() {
         webView.translatesAutoresizingMaskIntoConstraints = false
         backButton.translatesAutoresizingMaskIntoConstraints = false
         progressView.translatesAutoresizingMaskIntoConstraints = false
@@ -94,14 +93,14 @@ extension WebViewViewController {
         )
     }
 
-    private func setupWebView() -> WKWebView {
+    func setupWebView() -> WKWebView {
         let webView = WKWebView()
         webView.navigationDelegate = self
-
+        webView.accessibilityIdentifier = "UnsplashWebView"
         return webView
     }
 
-    private func setupButton() -> UIButton {
+    func setupButton() -> UIButton {
         let button = UIButton()
         button.setImage(UIImage(named: "nav_back_button"), for: .normal)
         button.tintColor = .ypBlack
@@ -109,29 +108,15 @@ extension WebViewViewController {
         return button
     }
 
-    private func setupProgressView() -> UIProgressView {
+    func setupProgressView() -> UIProgressView {
         let progress = UIProgressView(progressViewStyle: .default)
         progress.progressTintColor = .ypBlack
         return progress
     }
 }
 
+// MARK: делегат управления webView
 extension WebViewViewController: WKNavigationDelegate {
-    private func code(from navigationAction: WKNavigationAction) -> String? {
-        if
-            let url = navigationAction.request.url,
-            let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/authorize/native",
-            let items = urlComponents.queryItems,
-            let codeItem = items.first(where: { $0.name == "code" })
-        {
-            return codeItem.value
-        }
-        else {
-            return nil
-        }
-    }
-
     func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
@@ -139,11 +124,18 @@ extension WebViewViewController: WKNavigationDelegate {
     {
         if let code = code(from: navigationAction) {
             decisionHandler(.cancel)
-            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+            presenter?.didAuthenticate(withCode: code)
         }
         else {
             decisionHandler(.allow)
         }
+    }
+
+    private func code(from navigationAction: WKNavigationAction) -> String? {
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url)
+        }
+        return nil
     }
 }
 
