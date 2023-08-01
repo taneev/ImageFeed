@@ -36,10 +36,10 @@ private extension AuthViewController {
         let webViewController = WebViewViewController()
 
         let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+        webViewPresenter.delegate = self
         webViewPresenter.viewController = webViewController
 
         webViewController.presenter = webViewPresenter
-        webViewController.delegate = self
 
         navigationController?.navigationBar.isHidden = true
         navigationController?.pushViewController(webViewController, animated: true)
@@ -93,8 +93,8 @@ private extension AuthViewController {
 }
 
 
-// MARK: - WebViewViewControllerDelegate
-extension AuthViewController: WebViewViewControllerDelegate {
+// MARK: - WebViewPresenterAuthDelegate
+extension AuthViewController: WebViewPresenterAuthDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         UIBlockingProgressHUD.show()
         vc.navigationController?.popViewController(animated: true)

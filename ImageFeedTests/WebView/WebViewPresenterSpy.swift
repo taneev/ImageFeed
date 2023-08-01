@@ -5,7 +5,7 @@
 //  Created by Тимур Танеев on 13.07.2023.
 //
 
-import ImageFeed
+@testable import ImageFeed
 import Foundation
 
 final class WebViewPresenterSpy: WebViewPresenterProtocol {
@@ -23,5 +23,13 @@ final class WebViewPresenterSpy: WebViewPresenterProtocol {
 
     func code(from url: URL) -> String? {
         return nil
+    }
+
+    func didTapBackButton() {
+
+    }
+
+    func didAuthenticate(withCode code: String) {
+
     }
 }

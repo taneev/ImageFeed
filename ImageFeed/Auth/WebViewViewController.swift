@@ -8,11 +8,6 @@
 import UIKit
 import WebKit
 
-protocol WebViewViewControllerDelegate: AnyObject {
-    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController)
-}
-
 public protocol WebViewViewControllerProtocol: AnyObject {
     var presenter: WebViewPresenterProtocol? { get set }
     func load(request: URLRequest)
@@ -28,8 +23,6 @@ final class WebViewViewController: UIViewController {
     private lazy var progressView: UIProgressView = {setupProgressView()}()
 
     private var estimatedProgressObservation: NSKeyValueObservation?
-
-    weak var delegate: WebViewViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +41,7 @@ final class WebViewViewController: UIViewController {
     }
 
     @objc private func didTapBackButton(_ sender: Any) {
-        delegate?.webViewViewControllerDidCancel(self)
+        presenter?.didTapBackButton()
     }
 }
 
@@ -124,13 +117,6 @@ private extension WebViewViewController {
 
 // MARK: делегат управления webView
 extension WebViewViewController: WKNavigationDelegate {
-    private func code(from navigationAction: WKNavigationAction) -> String? {
-        if let url = navigationAction.request.url {
-            return presenter?.code(from: url)
-        }
-        return nil
-    }
-
     func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
@@ -138,11 +124,18 @@ extension WebViewViewController: WKNavigationDelegate {
     {
         if let code = code(from: navigationAction) {
             decisionHandler(.cancel)
-            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+            presenter?.didAuthenticate(withCode: code)
         }
         else {
             decisionHandler(.allow)
         }
+    }
+
+    private func code(from navigationAction: WKNavigationAction) -> String? {
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url)
+        }
+        return nil
     }
 }
 

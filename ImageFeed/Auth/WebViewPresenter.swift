@@ -11,10 +11,18 @@ public protocol WebViewPresenterProtocol {
     func viewDidLoad()
     func didUpdateProgressValue(_ newValue: Double)
     func code(from url: URL) -> String?
+    func didTapBackButton()
+    func didAuthenticate(withCode code: String)
+}
+
+protocol WebViewPresenterAuthDelegate: AnyObject {
+    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
+    func webViewViewControllerDidCancel(_ vc: WebViewViewController)
 }
 
 final class WebViewPresenter: WebViewPresenterProtocol {
     weak var viewController: WebViewViewControllerProtocol?
+    weak var delegate: WebViewPresenterAuthDelegate?
     var authHelper: AuthHelperProtocol
 
     init(authHelper: AuthHelperProtocol) {
@@ -40,6 +48,16 @@ final class WebViewPresenter: WebViewPresenterProtocol {
 
     func code(from url: URL) -> String? {
         authHelper.code(from: url)
+    }
+
+    func didTapBackButton() {
+        guard let webViewViewController = viewController as? WebViewViewController else {return}
+        delegate?.webViewViewControllerDidCancel(webViewViewController)
+    }
+
+    func didAuthenticate(withCode code: String) {
+        guard let webViewViewController = viewController as? WebViewViewController else {return}
+        delegate?.webViewViewController(webViewViewController, didAuthenticateWithCode: code)
     }
 
     private func loadWebViewContent() {
